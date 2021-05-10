@@ -1,0 +1,88 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "Combat",
+            "id": "a4f1f220-8d8d-4b15-bda1-308ebedfbc10",
+            "actions": [
+                {
+                    "name": "LClick",
+                    "type": "Button",
+                    "id": "baf942b6-c9c1-4ed3-a23a-951a349a1423",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "DebugMod",
+                    "type": "Button",
+                    "id": "c7c60f71-c6da-436c-a75c-a126de54bbf8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "d9148e73-1423-4b4b-9506-961fba8fccdd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "5bc1a128-4e83-4e25-8bb5-aa6c6f99c78f",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Default (Keyboard + Mouse)",
+                    "action": "LClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "491d84f1-c520-43f7-99bb-771cec02da8b",
+                    "path": "<Keyboard>/numpad0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Default (Keyboard + Mouse)",
+                    "action": "DebugMod",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5e4d4394-f0cd-4fa4-ad3e-004157c5712f",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Default (Keyboard + Mouse)",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Default (Keyboard + Mouse)",
+            "bindingGroup": "Default (Keyboard + Mouse)",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
