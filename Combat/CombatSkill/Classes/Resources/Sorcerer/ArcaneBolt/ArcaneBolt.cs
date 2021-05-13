@@ -2,15 +2,15 @@
 {
     public class ArcaneBolt : CombatSkill
     {
-        public override bool CheckRequirements(UnitController unit, CombatSkillObject data, Tile targetTile)
+        public override bool CheckRequirements(SkillDefinition skillDefinition, UnitController unit, Tile targetTile)
         {
             return targetTile?.TileEntity.Team != 0;
         }
 
-        public override void OnSkillLaunched(UnitController caster, CombatSkillObject data, CombatCursor cursor, Tile targetTile)
+        public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            base.OnSkillLaunched(caster, data, cursor, targetTile);
-            targetTile.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnHPLoss(50, DamageTypes.Arcane);//TODO SCALE AP
+            base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
+            targetTile.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnHPLoss(_updatedStats.Potency, DamageTypes.Arcane);
         }
     }
 }

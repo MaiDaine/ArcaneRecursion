@@ -28,10 +28,10 @@
 
         public void ApplyPercentModifier(UnitStats modifier) { _statModifierPercent.ApplyModifier(modifier); }
 
-        public bool CheckSkillRessourceRequirement(LiveSkill spell)
+        public bool CheckSkillRessourceRequirement(SkillDefinition skill)
         {
-            return spell.CombatSkillObject.APCost <= UnitStats.ActionPoint
-                && spell.CombatSkillObject.MPCost <= UnitStats.ManaPoint;
+            return skill.SkillStats.APCost <= UnitStats.ActionPoint
+                && skill.SkillStats.MPCost <= UnitStats.ManaPoint;
         }
 
         #region AP

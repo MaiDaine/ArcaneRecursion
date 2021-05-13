@@ -18,6 +18,7 @@ namespace ArcaneRecursion
         public virtual void UnitTurn(CombatEntity unit)
         {
             _currentUnit = unit.GameObject.GetComponent<UnitController>();
+            CombatUIController.Instance.UnitSkillPanelControler.SetUnitPannel(_currentUnit);
             _currentUnit.StartTurn();
             _currentUnit.Status.OnStartTurn();
         }

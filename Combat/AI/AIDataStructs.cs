@@ -4,9 +4,6 @@ using UnityEngine;
 
 namespace ArcaneRecursion
 {
-    public enum TeamGoal { Poke, Burst, Defend }
-    public enum SkillTag { Passiv, Move, DPS, CC, Heal, Buff, Debuff, AOE }
-
     public struct PlannerWorldState
     {
         public TeamGoal CurrentGoal;
@@ -48,7 +45,7 @@ namespace ArcaneRecursion
 
     public struct SimulatedStep
     {
-        public CombatSkillObject Skill;
+        public SkillData Skill;
         public Tile[] Targets;
     }
 

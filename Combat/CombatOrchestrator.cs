@@ -46,12 +46,10 @@ namespace ArcaneRecursion
                     Debug.Log("MAP EVENT");
                     break;
                 case 1:
-                    CombatUIController.Instance.UnitSkillPanelControler.SetUnitPannel(entity as CombatEntity);
                     playerController.PlayerTurn = true;
                     playerController.UnitTurn(entity as CombatEntity);
                     break;
                 case 2:
-                    CombatUIController.Instance.UnitSkillPanelControler.SetUnitPannel(entity as CombatEntity);
                     aIController.UnitTurn(entity as CombatEntity);
                     break;
                 default:

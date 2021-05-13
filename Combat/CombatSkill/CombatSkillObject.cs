@@ -13,6 +13,5 @@ namespace ArcaneRecursion
         public int APCost;
         public int MPCost;
         public NodeDefinition NodeDefinition;
-        public CombatSkillReference Skill;
     }
 }

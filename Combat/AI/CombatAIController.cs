@@ -16,7 +16,7 @@ namespace ArcaneRecursion
             RefreshWorldState(ref worldState, unit);
             UpdateTeamPlanning(ref worldState);
             List<Tile[]> bestPositions = worldState.CurrentUnit.Brain.EvaluateBestPosition(worldState, _grid);
-            List<CombatSkillObject> availableSkills;
+            List<SkillData> availableSkills;
             StepSequence bestSequence = new StepSequence { Score = 0, Steps = new List<SimulatedStep>() { new SimulatedStep() { Skill = null, Targets = bestPositions[0] } } };
 
             if (worldState.CurrentGoal == TeamGoal.Poke)
@@ -27,8 +27,8 @@ namespace ArcaneRecursion
                     MaxMPCost = worldState.CurrentUnit.AvailableMP,
                     MinEnemyRange = 0,
                     MinAllyRange = 0,
-                    RequieredTags = new SkillTag[] { SkillTag.DPS, SkillTag.Debuff, SkillTag.Heal, SkillTag.Buff },
-                    ProhibitedTags = new SkillTag[] { SkillTag.CC }
+                    RequieredTags = new SkillTag[] { SkillTag.Damage, SkillTag.Debuff, SkillTag.Heal, SkillTag.Buff },
+                    ProhibitedTags = new SkillTag[] { SkillTag.Control }
                 };
                 foreach (Tile[] path in bestPositions)
                 {
@@ -97,7 +97,7 @@ namespace ArcaneRecursion
             }
         }
 
-        private StepSequence FindBestSequence(PlannerWorldState worldState, Tile[] path, List<CombatSkillObject> availableSkills, StepSequence currentSequence)
+        private StepSequence FindBestSequence(PlannerWorldState worldState, Tile[] path, List<SkillData> availableSkills, StepSequence currentSequence)
         {
             int bestScore = -1;
             int currentScore = 0;
@@ -105,12 +105,12 @@ namespace ArcaneRecursion
             int availableAP;
             SimulatedStep bestStep = new SimulatedStep();
             SimulatedStep currentStep;
-            foreach (CombatSkillObject skill in availableSkills)
+            foreach (SkillData skill in availableSkills)
             {
                 for (int i = 0; i < path.Length; i++)
                 {
                     availableAP = worldState.CurrentUnit.AvailableAP - (worldState.CurrentUnit.MoveCost * i);
-                    if (availableAP >= skill.APCost)
+                    if (availableAP >= skill.SkillDefinition.SkillStats.APCost)
                     {
                         currentStep = worldState.CurrentUnit.Brain.EvaluateAction(worldState, path[i], skill, ref currentScore);
                         if (currentScore > bestScore)
@@ -143,7 +143,7 @@ namespace ArcaneRecursion
             currentSequence.Score += bestScore;
             currentSequence.Steps.Add(bestStep);
             UpdateLocalWorldState(ref worldState, bestStep);
-            availableSkills.RemoveAll(x => x.APCost > worldState.CurrentUnit.AvailableAP);
+            availableSkills.RemoveAll(x => x.SkillDefinition.SkillStats.APCost > worldState.CurrentUnit.AvailableAP);
             if (availableSkills.Count == 0)
                 return currentSequence;
             return FindBestSequence(worldState, path, availableSkills, currentSequence);
@@ -151,7 +151,7 @@ namespace ArcaneRecursion
 
         private void UpdateLocalWorldState(ref PlannerWorldState worldState, SimulatedStep step)
         {
-            worldState.CurrentUnit.AvailableAP -= step.Skill.APCost;
+            worldState.CurrentUnit.AvailableAP -= step.Skill.SkillDefinition.SkillStats.APCost;
         }
 
         private void ExecuteSequence()
@@ -170,8 +170,7 @@ namespace ArcaneRecursion
                 _currentUnit.Move(ExecuteSequence, step.Targets.Skip(1).ToArray());
                 return;
             }
-            Debug.Log(string.Format("STEP: {0} => {1}", step.Skill.Skill, step.Targets[0]));
-            _currentUnit.CurrentStats.ActionPoint -= step.Skill.APCost;
+            _currentUnit.CurrentStats.ActionPoint -= step.Skill.SkillDefinition.SkillStats.APCost;
             ExecuteSequence();
         }
     }

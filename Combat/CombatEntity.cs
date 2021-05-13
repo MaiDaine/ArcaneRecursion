@@ -13,7 +13,6 @@ namespace ArcaneRecursion
         public Sprite Icone { get; }
         public int CombatSpeed { get { return UnitStats.CombatSpeed; } }
         public UnitStats UnitStats { get; }
-        public List<ClassBuild> Build { get; }
 
         public CombatEntity(GameObject gameObject, CombatUnit combatUnit, CombatTurnEntityStore store)
         {
@@ -21,8 +20,7 @@ namespace ArcaneRecursion
             Team = store.Team;
             Id = store.Id;
             Icone = store.Icone;
-            UnitStats = combatUnit.Stats;//TODO
-            Build = combatUnit.Build;
+            UnitStats = combatUnit.Stats;
         }
     }
 

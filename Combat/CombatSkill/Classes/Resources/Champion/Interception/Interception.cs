@@ -8,7 +8,7 @@ namespace ArcaneRecursion
         private UnitController _targetUnit;
         private Tile _targetTile;
 
-        public override bool CheckRequirements(UnitController unit, CombatSkillObject data, Tile targetTile)
+        public override bool CheckRequirements(SkillDefinition skillDefinition, UnitController unit, Tile targetTile)
         {
             if (targetTile?.TileEntity.Team != 0)
             {
@@ -18,9 +18,9 @@ namespace ArcaneRecursion
             return false;
         }
 
-        public override void OnSkillLaunched(UnitController caster, CombatSkillObject data, CombatCursor cursor, Tile targetTile)
+        public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            base.OnSkillLaunched(caster, data, cursor, targetTile);
+            base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
 
             Tile[] pathTiles = new Tile[cursor.PreviousTiles.Length - 2];
             for (int i = 1; i < cursor.PreviousTiles.Length - 1; i++)

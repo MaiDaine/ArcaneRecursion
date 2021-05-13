@@ -12,6 +12,7 @@ namespace ArcaneRecursion
         [SerializeField] private GameObject _advanceActionGameObject;
         [SerializeField] private GameObject _advanceActionList;
 
+        private UnitController _currentUnit = null;
         private CombatEntity _currentEntity = null;
 
         private readonly string[] _listObjectNames = { "Innate", "Class1", "Class2", "Class3", "End" };
@@ -28,26 +29,21 @@ namespace ArcaneRecursion
 
         public void UpdateAdvancePannel(int index)
         {
-            List<CombatSkillObject> skills = _currentEntity.Build[index].Skills;
+            List<UnitSkill> skills = _currentUnit.Skills.AvailableSkills[index];
 
             ShowAdvancePannel();
-            for (int i = 0; i < skills.Count; i++)
+            for (int i = index == 0 ? 0 : 1; i < skills.Count; i++)
             {
                 Transform elem = _advanceActionList.GetComponent<Transform>().Find(i.ToString());
-                if (!skills[i].IsPassive)
-                {
-                    elem.gameObject.SetActive(true);
-                    ButtonManagerBasic button = elem.GetComponent<ButtonManagerBasic>();
-                    button.buttonText = skills[i].NodeDefinition.Name;
-                    button.ClearListener();
-                    button.AddIndexedListerner((index * _maxSkillPerCat) + i, LoadCombatSkill);
-                    button.UpdateUI();
-                    i++;
-                }
-                else
-                    elem.gameObject.SetActive(false);
-
-
+                elem.gameObject.SetActive(true);
+                ButtonManagerBasic button = elem.GetComponent<ButtonManagerBasic>();
+                button.buttonText = skills[i].SkillData.SkillDefinition.Name;
+                button.ClearListener();
+                button.AddIndexedListerner((index * _maxSkillPerCat) + i, LoadCombatSkill);
+                if (skills[i].Cooldown != 0)
+                    elem.GetComponent<UnityEngine.UI.Button>().interactable = false;
+                button.UpdateUI();
+                i++;
             }
             for (int i = skills.Count; i < _maxSkillPerCat; i++)
             {
@@ -56,31 +52,27 @@ namespace ArcaneRecursion
             }
         }
 
-        public void SetUnitPannel(CombatEntity entity)
+        public void SetUnitPannel(UnitController unit)
         {
             ButtonManagerBasic button;
             GameObject elem;
             int index = 0;
 
-            _currentEntity = entity;
-            foreach (ClassBuild e in entity.Build)
+            _currentUnit = unit;
+            while (unit.Skills.AvailableSkills[index] != null)
             {
                 elem = _baseActionList.GetComponent<Transform>().Find(index.ToString()).gameObject;
                 elem.SetActive(true);
                 button = elem.GetComponent<ButtonManagerBasic>();
                 button.ClearListener();
                 button.AddIndexedListerner(index, UpdateAdvancePannel);
-                button.buttonText = e.Name.ToString();
+                button.buttonText = unit.Skills.BuildClassNames[index].ToString();
                 button.UpdateUI();
                 index++;
             }
             for (int i = index; i < _listObjectNames.Length - 1; i++)
                 _baseActionList.GetComponent<Transform>().Find(i.ToString()).gameObject.SetActive(false);
-
-            //RectTransform listTransform = listObject.GetComponent<RectTransform>();
-            //int diff = 3 - entity.Build.Count;
-            //listTransform.sizeDelta = new Vector2(listTransform.sizeDelta.x, 3 + ((ListObjectNames.Length - diff) * baseElemSize));
-            //listTransform.position = new Vector3(listTransform.position.x, (ListObjectNames.Length - diff) * (baseElemSize / 2), listTransform.position.z);
+            HideAdvancePannel();
         }
 
         public void ShowAdvancePannel() { _advanceActionGameObject.SetActive(true); }

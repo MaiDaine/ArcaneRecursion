@@ -2,29 +2,30 @@
 {
     public class Overgrowth : CombatSkill
     {
-        public override bool CheckRequirements(UnitController unit, CombatSkillObject data, Tile targetTile)
+        public override bool CheckRequirements(SkillDefinition skillDefinition, UnitController unit, Tile targetTile)
         {
             return targetTile?.TileEntity.Team != 0;
         }
 
-        public override void OnSkillLaunched(UnitController caster, CombatSkillObject data, CombatCursor cursor, Tile targetTile)
+        public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            base.OnSkillLaunched(caster, data, cursor, targetTile);
-            targetTile.TileEntity.GameObject.GetComponent<UnitController>().Status.ApplyEffect(new OvergrowthEffect());
+            base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
+            targetTile.TileEntity.GameObject.GetComponent<UnitController>().Status.ApplyEffect(new OvergrowthEffect(_updatedStats.Potency));
         }
     }
 
     public class OvergrowthEffect : CombatEffect
     {
-        public OvergrowthEffect()
+        public OvergrowthEffect(int potency)
         {
             Name = "Overgrowth";
             Duration = 2;
+            Potency = potency;
         }
 
         public void Effect(UnitController unit)
         {
-            unit.Ressources.OnHPGain(100);//TODO SCALE AP
+            unit.Ressources.OnHPGain(Potency);
         }
 
         public override bool OnDispell(UnitController unit)

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+//TODO DYNAMIC LINK
 namespace ArcaneRecursion
 {
     [CreateAssetMenu(menuName = "ArcaneRecursion/Classes/EffectLibrary")]

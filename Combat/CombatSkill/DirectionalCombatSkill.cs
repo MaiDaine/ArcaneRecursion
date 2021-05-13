@@ -1,35 +1,32 @@
-﻿using UnityEngine;
-
-namespace ArcaneRecursion
+﻿namespace ArcaneRecursion
 {
     public class DirectionalCombatSkill : CombatSkill
     {
         private BasicOrientation _onCastOrientation;
         private BasicOrientation _onReceivedOrientation;
 
-        public virtual void FrontAttack(UnitController caster, CombatSkillObject data, CombatCursor cursor, UnitController targetUnit) { }
-        public virtual void SideAttack(UnitController caster, CombatSkillObject data, CombatCursor cursor, UnitController targetUnit) { }
-        public virtual void BackAttack(UnitController caster, CombatSkillObject data, CombatCursor cursor, UnitController targetUnit) { }
+        public virtual void FrontAttack(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, UnitController targetUnit) { }
+        public virtual void SideAttack(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, UnitController targetUnit) { }
+        public virtual void BackAttack(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, UnitController targetUnit) { }
 
-        public override void OnSkillLaunched(UnitController caster, CombatSkillObject data, CombatCursor cursor, Tile targetTile)
+        public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            base.OnSkillLaunched(caster, data, cursor, targetTile);
-
+            base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
             UnitController targetUnit = targetTile.TileEntity.GameObject.GetComponent<UnitController>();
             _onCastOrientation = HexCoordinates.GetOrientation(caster.Movement.Orientation, targetUnit.Movement.Orientation);
             _onReceivedOrientation = targetUnit.Status.OnDirectionalAttackReceived(_onCastOrientation);
-            // TODO ??
+            // TODO Orientation
             switch (_onCastOrientation)
             {
                 case BasicOrientation.Front:
-                    FrontAttack(caster, data, cursor, targetUnit);
+                    FrontAttack(skillDefinition, caster, cursor, targetUnit);
                     break;
                 case BasicOrientation.FrontSide:
                 case BasicOrientation.BackSide:
-                    SideAttack(caster, data, cursor, targetUnit);
+                    SideAttack(skillDefinition, caster, cursor, targetUnit);
                     break;
                 case BasicOrientation.Back:
-                    BackAttack(caster, data, cursor, targetUnit);
+                    BackAttack(skillDefinition, caster, cursor, targetUnit);
                     break;
             }
         }

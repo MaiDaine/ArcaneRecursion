@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace ArcaneRecursion
 {
@@ -7,6 +8,7 @@ namespace ArcaneRecursion
     public class ClassBuild
     {
         public ClassNames Name;
-        public List<CombatSkillObject> Skills;
+        public bool[] AvailableSkills = new bool[6];
+        [HideInInspector] public List<CombatSkillObject> Skills;
     }
 }

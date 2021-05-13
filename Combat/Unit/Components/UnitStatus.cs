@@ -24,12 +24,15 @@ namespace ArcaneRecursion
                 RefreshEnhancement();
         }
 
-        public void GetRealSkillCost(CombatSkillObject data, ref int APCost, ref int MPCost)
+        public SkillStats SetSkillStatsFromCurrentState(SkillStats baseStats)
         {
-            APCost = data.APCost - _skillModifier.APFlat;
-            APCost = (int)(data.APCost * _skillModifier.APPercent);
-            MPCost = data.MPCost - _skillModifier.MPFlat;
-            MPCost = (int)(data.MPCost * _skillModifier.MPPercent);
+            SkillStats result = baseStats;
+            result.APCost = baseStats.APCost - _skillModifier.APFlat;
+            result.APCost = (int)(result.APCost * _skillModifier.APPercent);
+            result.MPCost = baseStats.MPCost - _skillModifier.MPFlat;
+            result.MPCost = (int)(result.MPCost * _skillModifier.MPPercent);
+            //TODO Potency scale
+            return result;
         }
 
         #region UnitTurn Cycle

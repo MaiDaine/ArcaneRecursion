@@ -6,7 +6,7 @@ namespace ArcaneRecursion
 {
     public class ArcaneFlow : CombatSkill
     {
-        public override void OnSkillLaunched(UnitController caster, CombatSkillObject data, CombatCursor cursor, Tile targetTile)
+        public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
             caster.Status.ApplyEffect(new ArcaneFlowPassivEffect());
         }

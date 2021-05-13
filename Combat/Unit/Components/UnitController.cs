@@ -14,12 +14,12 @@ namespace ArcaneRecursion
         public Tile CurrentTile { get { return Movement.CurrentTile; } }
 
         #region Init
-        public void Init(CombatEntity entity, Tile tile)
+        public void Init(CombatUnit unit, CombatEntity entity, Tile tile)
         {
             CombatEntity = entity;
             Movement.Init(tile, entity);
             Ressources.LoadStats(entity.UnitStats);
-            Skills = new UnitSkills(CombatEntity.Build, this);
+            Skills = new UnitSkills(unit.Build, this);
         }
         #endregion /* Init */
 

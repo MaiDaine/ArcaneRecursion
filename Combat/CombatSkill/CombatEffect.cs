@@ -4,6 +4,7 @@
     {
         public string Name;
         public int Duration;
+        public int Potency;
 
         public virtual bool OnDispell(UnitController unit) { return false; }
         public virtual void OnDurationEnd(UnitController unit) { }

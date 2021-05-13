@@ -29,20 +29,19 @@ namespace ArcaneRecursion
             };
         }
 
-        public List<CombatSkillObject> GetSkillsWithCriteria(SkillSearch criterias)
+        public List<SkillData> GetSkillsWithCriteria(SkillSearch criterias)
         {
             UnitController controller = GetComponent<UnitController>();
-            List<CombatSkillObject> results = new List<CombatSkillObject>();
+            List<SkillData> results = new List<SkillData>();
 
-            foreach (List<LiveSkill> skills in controller.Skills.LiveSkills)
+            foreach (List<UnitSkill> skills in controller.Skills.AvailableSkills)
             {
                 if (skills != null)
                 {
-
-                    foreach (LiveSkill skill in skills)
+                    foreach (UnitSkill skill in skills)
                     {
-                        if (skill.Cooldown == 0 && ValidateCriteria(skill.CombatSkillObject, criterias))
-                            results.Add(skill.CombatSkillObject);
+                        if (skill.SkillStats.Cooldown == 0 && ValidateCriteria(skill.SkillData, criterias))
+                            results.Add(skill.SkillData);
                     }
                 }
             }
@@ -50,13 +49,13 @@ namespace ArcaneRecursion
             return results;
         }
 
-        public SimulatedStep EvaluateAction(PlannerWorldState worldState, Tile fromPosition, CombatSkillObject skill, ref int score)
+        public SimulatedStep EvaluateAction(PlannerWorldState worldState, Tile fromPosition, SkillData skill, ref int score)
         {
             //TODO
             score = -1;
             foreach (WSUnit unit in worldState.Enemies)
             {
-                if (fromPosition.Coordinates.DistanceTo(worldState.Enemies[worldState.DamageTargetIndex].Position.Coordinates) <= skill.CastRange)
+                if (fromPosition.Coordinates.DistanceTo(worldState.Enemies[worldState.DamageTargetIndex].Position.Coordinates) <= skill.SkillDefinition.SkillStats.CastRange)
                 {
                     score = 100;
                     return new SimulatedStep() { Skill = skill, Targets = new Tile[1] { unit.Position } };
@@ -69,10 +68,10 @@ namespace ArcaneRecursion
         protected virtual List<Tile[]> FindBurstPosition(PlannerWorldState worldState, CombatGrid grid) { return StubSearch(worldState, grid); }
         protected virtual List<Tile[]> FindDefendPosition(PlannerWorldState worldState, CombatGrid grid) { return StubSearch(worldState, grid); }
 
-        protected bool ValidateCriteria(CombatSkillObject skill, SkillSearch criterias)
+        protected bool ValidateCriteria(SkillData skill, SkillSearch criterias)
         {
             //TODO
-            return skill.CastRange >= criterias.MinEnemyRange;
+            return skill.SkillDefinition.SkillStats.CastRange >= criterias.MinEnemyRange;
         }
 
         private List<Tile[]> StubSearch(PlannerWorldState worldState, CombatGrid grid)

@@ -29,7 +29,7 @@ namespace ArcaneRecursion
             if (tile != _currentTile)
             {
                 if (_currentUnit.Skills.SelectedSkill != null)
-                    _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.CombatSkillObject, _currentUnit, tile);
+                    _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, tile);
                 else
                     _cursor.UpdateMoveCursor(_currentUnit, _currentTile, tile);
                 _currentTile = tile;
@@ -57,17 +57,16 @@ namespace ArcaneRecursion
 
         public void SkillLoaded()
         {
-            //TODO UPDATE SPELL REQ WITH UNIT STATUS
-            if (!_currentUnit.Ressources.CheckSkillRessourceRequirement(_currentUnit.Skills.SelectedSkill))
+            //TODO Update spell req with unit status
+            if (!_currentUnit.Ressources.CheckSkillRessourceRequirement(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition))
             {
-                Debug.Log("MISSING RESSOURCES TO CAST " + _currentUnit.Skills.SelectedSkill.CombatSkillObject.NodeDefinition.Name);
                 return;
             }
 
             List<Tile> tiles = new List<Tile>();
             tiles.Add(_currentUnit.CurrentTile);
 
-            for (int indexRange = 0; indexRange < _currentUnit.Skills.SelectedSkill.CombatSkillObject.CastRange; indexRange++)
+            for (int indexRange = 0; indexRange < _currentUnit.Skills.SelectedSkill.SkillStats.CastRange; indexRange++)
             {
                 List<Tile> tmpList = new List<Tile>();
                 for (int currentTileIndex = 0; currentTileIndex < tiles.Count; currentTileIndex++)
@@ -87,27 +86,25 @@ namespace ArcaneRecursion
                 tiles.Clear();
                 tiles.AddRange(tmpList);
             }
-            _loadedSkill = Activator.CreateInstance(Type.GetType("ArcaneRecursion." + _currentUnit.Skills.SelectedSkill.CombatSkillObject.NodeDefinition.Name)) as CombatSkill;
+            _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
             _loadedSkill.TilesAffected = tiles;
         }
 
         public void SelectionClick(InputAction.CallbackContext context)
         {
-            //TODO remplace condition
-            if (_currentTile == null) //TODO RAYCAST PLAYER
+            if (_currentTile == null)
                 return;
-            //TODO remplace condition
             if (context.performed && PlayerTurn)
             {
                 if (_currentUnit.Skills.SelectedSkill != null)
                 {
                     Tile targetTile = _raycast.GetTileFromCursor();
-                    if (targetTile != null && _loadedSkill.CheckRequirements(_currentUnit, _currentUnit.Skills.SelectedSkill.CombatSkillObject, targetTile))
+                    if (targetTile != null && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, targetTile))
                     {
                         if (targetTile != _currentUnit.CurrentTile)
                             _currentUnit.Movement.SetOrientation(targetTile);
 
-                        _loadedSkill.OnSkillLaunched(_currentUnit, _currentUnit.Skills.SelectedSkill.CombatSkillObject, _cursor, targetTile);
+                        _loadedSkill.OnSkillLaunched(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _cursor, targetTile);
                         _currentUnit.Status.OnSkillLaunched();
                         CombatUIController.Instance.CurrentUnitRessourcesPanelController.SetTargetUnit(_currentUnit);
                         CancelAction();
@@ -115,7 +112,7 @@ namespace ArcaneRecursion
                         CombatUIController.Instance.CurrentUnitRessourcesPanelController.SetTargetUnit(_currentUnit);
                     }
                 }
-                else if (_canInteract && _currentUnit != null && _currentTile && _currentTile.State == TileState.Empty)//TODO
+                else if (_canInteract && _currentUnit != null && _currentTile && _currentTile.State == TileState.Empty)
                 {
                     string error = _currentUnit.Move(UnlockInteraction, _grid.FindPath(_currentUnit.CurrentTile, _currentTile));
                     if (error != null)

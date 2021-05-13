@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ArcaneRecursion
 {
-    public class CombatLoader : MonoBehaviour //TODO
+    public class CombatLoader : MonoBehaviour //TODO {Encounters}
     {
         public CombatGrid Grid;
         public CombatLoaderData Data;
@@ -25,7 +25,7 @@ namespace ArcaneRecursion
                 UnitController controller = unit.GetComponent<UnitController>();
                 CombatEntity combatEntity = new CombatEntity(unit, e, new CombatTurnEntityStore(1, tmp, e.Icone));
                 //CombatEntity combatEntity = new CombatEntity(unit, e, 1, tmp);
-                controller.Init(combatEntity, Grid.Tiles[POS[tmp]]);
+                controller.Init(e, combatEntity, Grid.Tiles[POS[tmp]]);
                 controller.Movement.SetOrientation(controller.CurrentTile.SearchData.GetNeighbor(HexDirection.E));
                 PlayerUnits.Add(combatEntity);
                 tmp++;
@@ -39,7 +39,7 @@ namespace ArcaneRecursion
                 UnitController controller = unit.GetComponent<UnitController>();
                 CombatEntity combatEntity = new AICombatEntity(unit, e, new CombatTurnEntityStore(2, tmp, e.Icone, e.FormationPosition));
                 //CombatEntity combatEntity = new CombatEntity(unit, e, 2, tmp);
-                controller.Init(combatEntity, Grid.Tiles[POS[tmp]]);
+                controller.Init(e, combatEntity, Grid.Tiles[POS[tmp]]);
                 controller.Movement.SetOrientation(controller.CurrentTile.SearchData.GetNeighbor(HexDirection.W));
                 EnemyUnits.Add(combatEntity);
                 tmp++;
@@ -50,7 +50,7 @@ namespace ArcaneRecursion
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void OnBeforeSceneLoadRuntimeMethod()
         {
-            NodeDefinition notImplemented = Resources.Load("NotImplemented") as NodeDefinition;
+            SkillDefinition notImplemented = Resources.Load("NotImplemented") as SkillDefinition;
             ClassNames[] classNames = (ClassNames[])ClassNames.GetValues(typeof(ClassNames));
             string skillName;
 
@@ -58,8 +58,8 @@ namespace ArcaneRecursion
                 for (int skillIndex = 0; skillIndex < 6; skillIndex++)
                 {
                     skillName = ClassLibrary.ClassDefs[classNames[classIndex]][skillIndex].Skill.ToString().Replace("ArcaneRecursion.", "");
-                    NodeDefinition nodeDefinition = Resources.Load(string.Format("{0}/{1}/{1}", classNames[classIndex].ToString(), skillName)) as NodeDefinition;
-                    ClassLibrary.ClassDefs[classNames[classIndex]][skillIndex].NodeDefinition = nodeDefinition ?? notImplemented;
+                    SkillDefinition skillDefinition = Resources.Load(string.Format("{0}/{1}/{1}", classNames[classIndex].ToString(), skillName)) as SkillDefinition;
+                    ClassLibrary.ClassDefs[classNames[classIndex]][skillIndex].SkillDefinition = skillDefinition ?? notImplemented;
                 }
         }
     }

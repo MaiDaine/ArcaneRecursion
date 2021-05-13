@@ -2,32 +2,21 @@
 
 namespace ArcaneRecursion
 {
-    public enum CombatSkillReference
-    {
-        Null, BasicAtk,
-        ArcaneBolt,
-        ArcaneFlow,
-        Interception,
-        Overgrowth
-    }
-
     public abstract class CombatSkill
     {
         public List<Tile> TilesAffected { get; set; }
+        protected SkillStats _updatedStats;
 
-        public virtual bool CheckRequirements(UnitController unit, CombatSkillObject data, Tile targetTile)
+        public virtual bool CheckRequirements(SkillDefinition skillDefinition, UnitController unit, Tile targetTile)
         {
             return true;
         }
 
-        public virtual void OnSkillLaunched(UnitController caster, CombatSkillObject data, CombatCursor cursor, Tile targetTile)
+        public virtual void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            int APCost = 0;
-            int MPCost = 0;
-
-            caster.Status.GetRealSkillCost(data, ref APCost, ref MPCost);
-            caster.Ressources.OnAPLoss(APCost);
-            caster.Ressources.OnMPLoss(MPCost);
+            _updatedStats = caster.Status.SetSkillStatsFromCurrentState(skillDefinition.SkillStats);
+            caster.Ressources.OnAPLoss(_updatedStats.APCost);
+            caster.Ressources.OnMPLoss(_updatedStats.MPCost);
             caster.Skills.OnSkillLaunched();
         }
 

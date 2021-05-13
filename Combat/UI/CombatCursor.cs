@@ -40,7 +40,7 @@
             return path;
         }
 
-        public void UpdateSkillCursor(CombatSkill loadedSkill, CombatSkillObject skillData, UnitController unit, Tile toTile)
+        public void UpdateSkillCursor(CombatSkill loadedSkill, SkillData skillData, UnitController unit, Tile toTile)
         {
             if (PreviousTiles != null)
                 foreach (Tile pTile in PreviousTiles)
@@ -52,7 +52,7 @@
             if (toTile == null)
                 return;
 
-            if (skillData.CastRange == 0)
+            if (skillData.SkillDefinition.SkillStats.CastRange == 0)
             {
                 unit.CurrentTile.SetTileTmpState(TileTmpState.SkillRange);
                 if (unit.CurrentTile != toTile)
@@ -65,9 +65,9 @@
                 return;
             }
 
-            if (unit.CurrentTile.Coordinates.DistanceTo(toTile.Coordinates) <= skillData.CastRange
-                && loadedSkill.CheckRequirements(unit, skillData, toTile))
-                PreviousTiles = skillData.Cursor.Apply(_grid, unit, toTile);
+            if (unit.CurrentTile.Coordinates.DistanceTo(toTile.Coordinates) <= skillData.SkillDefinition.SkillStats.CastRange
+                && loadedSkill.CheckRequirements(skillData.SkillDefinition, unit, toTile))
+                PreviousTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile);
             else
             {
                 toTile.SetTileTmpState(TileTmpState.Invalid);

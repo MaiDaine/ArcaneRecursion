@@ -1,20 +1,22 @@
-﻿namespace ArcaneRecursion
+﻿using System;
+
+namespace ArcaneRecursion
 {
     public class BasicAtk : DirectionalCombatSkill
     {
-        public override void FrontAttack(UnitController caster, CombatSkillObject data, CombatCursor cursor, UnitController targetUnit)
+        public override void FrontAttack(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, UnitController targetUnit)
         {
-            targetUnit.Ressources.OnHPLoss(25, DamageTypes.Physical);//TODO SCALE AP
+            targetUnit.Ressources.OnHPLoss(_updatedStats.Potency, DamageTypes.Physical);
         }
 
-        public override void SideAttack(UnitController caster, CombatSkillObject data, CombatCursor cursor, UnitController targetUnit)
+        public override void SideAttack(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, UnitController targetUnit)
         {
-            targetUnit.Ressources.OnHPLoss(50, DamageTypes.Physical);//TODO SCALE AP
+            targetUnit.Ressources.OnHPLoss((int)(_updatedStats.Potency * 1.5f), DamageTypes.Physical);
         }
 
-        public override void BackAttack(UnitController caster, CombatSkillObject data, CombatCursor cursor, UnitController targetUnit)
+        public override void BackAttack(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, UnitController targetUnit)
         {
-            targetUnit.Ressources.OnHPLoss(75, DamageTypes.Physical);//TODO SCALE AP
+            targetUnit.Ressources.OnHPLoss(_updatedStats.Potency * 2, DamageTypes.Physical);
         }
     }
 }
