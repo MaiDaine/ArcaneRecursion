@@ -21,7 +21,6 @@ namespace ArcaneRecursion
         public int AvailableAP;
         public int AvailableMP;
         public int MoveCost;
-        public List<CombatSkillObject> AvailableSkills;
         public UnitBrain Brain;
         public UnitController Controller;//should stub unit to account for buff
     }

@@ -33,13 +33,13 @@ namespace ArcaneRecursion
                 AvailableSkills[classIndex] = new List<UnitSkill>();
                 if (build[classIndex].AvailableSkills[0])
                 {
-                    SkillData skill = ClassLibrary.ClassDefs[build[classIndex].Name][0];
+                    SkillData skill = ClassSkillLibrary.ClassSkillsDatas[build[classIndex].Name][0];
                     ((CombatSkill)Activator.CreateInstance(skill.Skill)).OnSkillLaunched(skill.SkillDefinition, unit, null, null);
                 }
                 for (int i = 1; i < 6; i++)
                 {
                     if (build[classIndex].AvailableSkills[i])
-                        AvailableSkills[classIndex].Add(new UnitSkill(ClassLibrary.ClassDefs[build[classIndex].Name][i]));
+                        AvailableSkills[classIndex].Add(new UnitSkill(ClassSkillLibrary.ClassSkillsDatas[build[classIndex].Name][i]));
                 }
             }
             ClearSelectedSkill();

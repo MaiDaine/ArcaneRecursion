@@ -3,11 +3,12 @@ using System;
 
 namespace ArcaneRecursion
 {
-    public static class ClassLibrary
+    public static class ClassSkillLibrary
     {
-        public static Dictionary<ClassNames, SkillData[]> ClassDefs = new Dictionary<ClassNames, SkillData[]>()
+        public static Dictionary<ClassNames, SkillData[]> ClassSkillsDatas = new Dictionary<ClassNames, SkillData[]>()
         {
-            { // ArcaneKnight
+            #region ArcaneKnight
+            {
                 ClassNames.ArcaneKnight,
                 new SkillData[6]
                 {
@@ -19,8 +20,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* ArcaneKnight */
 
-            { // Augmenter
+            #region Augmenter
+            {
                 ClassNames.Augmenter,
                 new SkillData[6]
                 {
@@ -32,8 +35,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Augmenter */
 
-            { // BladeDancer
+            #region BladeDancer
+            {
                 ClassNames.BladeDancer,
                 new SkillData[6]
                 {
@@ -45,8 +50,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* BladeDancer */
 
-            { // Champion
+            #region Champion
+            {
                 ClassNames.Champion,
                 new SkillData[6]
                 {
@@ -58,8 +65,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Champion */
 
-            { // Dominator
+            #region Dominator
+            {
                 ClassNames.Dominator,
                 new SkillData[6]
                 {
@@ -71,8 +80,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Dominator */
 
-            { // Druid
+            #region Druid
+            {
                 ClassNames.Druid,
                 new SkillData[6]
                 {
@@ -84,8 +95,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Druid */
 
-            { // Elementalist
+            #region Elementalist
+            {
                 ClassNames.Elementalist,
                 new SkillData[6]
                 {
@@ -97,8 +110,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Elementalist */
 
-            { // Preserver
+            #region Preserver
+            {
                 ClassNames.Preserver,
                 new SkillData[6]
                 {
@@ -110,8 +125,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Preserver */
 
-            { // PrimalKnight
+            #region PrimalKnight
+            {
                 ClassNames.PrimalKnight,
                 new SkillData[6]
                 {
@@ -123,8 +140,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* PrimalKnight */
 
-            { // Sentinel
+            #region Sentinel
+            {
                 ClassNames.Sentinel,
                 new SkillData[6]
                 {
@@ -136,8 +155,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Sentinel */
 
-            { // Shaman
+            #region Shaman
+            {
                 ClassNames.Shaman,
                 new SkillData[6]
                 {
@@ -149,8 +170,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Shaman */
 
-            { // Sorcerer
+            #region Sorcerer
+            {
                 ClassNames.Sorcerer,
                 new SkillData[6]
                 {
@@ -162,8 +185,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Sorcerer */
 
-            { // VoidKnight
+            #region VoidKnight
+            {
                 ClassNames.VoidKnight,
                 new SkillData[6]
                 {
@@ -175,8 +200,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* VoidKnight */
 
-            { // Warden
+            #region Warden
+            {
                 ClassNames.Warden,
                 new SkillData[6]
                 {
@@ -188,8 +215,10 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Warden */
 
-            { // Warrior
+            #region Warrior
+            {
                 ClassNames.Warrior,
                 new SkillData[6]
                 {
@@ -201,7 +230,31 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
             },
+            #endregion /* Warrior */
         };
+
+        public static Dictionary<string, SkillEffectData> ClassEffectsDatas = new Dictionary<string, SkillEffectData>()
+        {
+            #region Druid
+            {
+                GetNameFromType(typeof(OvergrowthEffect)),
+                new SkillEffectData(typeof(OvergrowthEffect), ClassNames.Druid)
+            },
+            #endregion /* Druid */
+
+            #region Sorcerer
+            {
+                GetNameFromType(typeof(ArcaneFlowEffectPassiv)),
+                new SkillEffectData(typeof(ArcaneFlowEffectPassiv), ClassNames.Sorcerer)
+            },
+            {
+                GetNameFromType(typeof(ArcaneFlowEffect)),
+                new SkillEffectData(typeof(ArcaneFlowEffect), ClassNames.Sorcerer)
+            },
+            #endregion /* Sorcerer */
+        };
+
+        public static string GetNameFromType(Type type) { return type.ToString().Replace("ArcaneRecursion.", ""); }
     }
 
     [Serializable]
@@ -213,9 +266,26 @@ namespace ArcaneRecursion
 
         public SkillData(Type skill)
         {
-            Name = skill.ToString().Replace("ArcaneRecursion.", "");
+            Name = ClassSkillLibrary.GetNameFromType(skill);
             Skill = skill;
             SkillDefinition = null;
+        }
+    }
+
+    [Serializable]
+    public class SkillEffectData
+    {
+        public string Name { get; }
+        public ClassNames Class;
+        public Type Skill;
+        public NodeDefinition EffectDefinition;
+
+        public SkillEffectData(Type skill, ClassNames className)
+        {
+            Name = ClassSkillLibrary.GetNameFromType(skill);
+            Class = className;
+            Skill = skill;
+            EffectDefinition = null;
         }
     }
 }

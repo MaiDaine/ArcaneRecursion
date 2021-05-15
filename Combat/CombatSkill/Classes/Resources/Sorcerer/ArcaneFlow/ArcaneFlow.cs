@@ -8,15 +8,15 @@ namespace ArcaneRecursion
     {
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            caster.Status.ApplyEffect(new ArcaneFlowPassivEffect());
+            caster.Status.ApplyEffect(new ArcaneFlowEffectPassiv());
         }
     }
 
-    public class ArcaneFlowPassivEffect : CombatEffect
+    public class ArcaneFlowEffectPassiv : CombatEffect
     {
-        public ArcaneFlowPassivEffect()
+        public ArcaneFlowEffectPassiv()
         {
-            Name = "ArcaneFlowPassivEffect";
+            base.SetName();
             Duration = -1;
         }
 
@@ -36,7 +36,7 @@ namespace ArcaneRecursion
     {
         public ArcaneFlowEffect()
         {
-            Name = "ArcaneFlowEffect";
+            base.SetName();
             Duration = 1;
         }
 

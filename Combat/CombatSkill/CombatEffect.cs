@@ -6,6 +6,11 @@
         public int Duration;
         public int Potency;
 
+        protected void SetName()
+        {
+            Name = ClassSkillLibrary.GetNameFromType(this.GetType());
+        }
+
         public virtual bool OnDispell(UnitController unit) { return false; }
         public virtual void OnDurationEnd(UnitController unit) { }
         public virtual void OnDirectionalAttackReceived(UnitController unitController, ref BasicOrientation from) { }

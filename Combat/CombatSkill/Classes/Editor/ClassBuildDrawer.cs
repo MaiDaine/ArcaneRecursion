@@ -9,9 +9,11 @@ namespace ArcaneRecursion
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             ClassNames className = (ClassNames)property.FindPropertyRelative("Name").enumValueIndex;
+            if (className == ClassNames.Innate)
+                property.isExpanded = false;
+
             int indent = EditorGUI.indentLevel;
             Vector2 currentPos = new Vector2(position.x, position.y);
-
             EditorGUI.BeginProperty(position, label, property);
             if (property.isExpanded)
             {
@@ -28,7 +30,7 @@ namespace ArcaneRecursion
                 {
                     currentPos.y += 20;
                     SerializedProperty value = availableSkills.GetArrayElementAtIndex(i);
-                    EditorGUI.PropertyField(new Rect(currentPos, new Vector2(300, 20)), value, new GUIContent(ClassLibrary.ClassDefs[className][i].Name));
+                    EditorGUI.PropertyField(new Rect(currentPos, new Vector2(300, 20)), value, new GUIContent(ClassSkillLibrary.ClassSkillsDatas[className][i].Name));
                 }
             }
             else

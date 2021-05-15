@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace ArcaneRecursion
 {
@@ -11,6 +12,7 @@ namespace ArcaneRecursion
         public List<SkillTag> SkillTags;
     }
 
+    [Serializable]
     public struct SkillStats
     {
         public int CastRange;

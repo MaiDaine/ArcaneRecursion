@@ -48,7 +48,7 @@ namespace ArcaneRecursion
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void OnBeforeSceneLoadRuntimeMethod()
+        static void OnBeforeSceneLoadRuntimeMethod()//TODO UNIT TEST
         {
             SkillDefinition notImplemented = Resources.Load("NotImplemented") as SkillDefinition;
             ClassNames[] classNames = (ClassNames[])ClassNames.GetValues(typeof(ClassNames));
@@ -57,10 +57,16 @@ namespace ArcaneRecursion
             for (int classIndex = 1; classIndex < classNames.Length; classIndex++)
                 for (int skillIndex = 0; skillIndex < 6; skillIndex++)
                 {
-                    skillName = ClassLibrary.ClassDefs[classNames[classIndex]][skillIndex].Skill.ToString().Replace("ArcaneRecursion.", "");
+                    skillName = ClassSkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].Name;
                     SkillDefinition skillDefinition = Resources.Load(string.Format("{0}/{1}/{1}", classNames[classIndex].ToString(), skillName)) as SkillDefinition;
-                    ClassLibrary.ClassDefs[classNames[classIndex]][skillIndex].SkillDefinition = skillDefinition ?? notImplemented;
+                    ClassSkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].SkillDefinition = skillDefinition ?? notImplemented;
                 }
+            string[] stringSeparators = new string[1] { "Effect" };
+            foreach (KeyValuePair<string, SkillEffectData> e in ClassSkillLibrary.ClassEffectsDatas)
+            {
+                string folderName = e.Value.Name.Split(stringSeparators, System.StringSplitOptions.RemoveEmptyEntries)[0];
+                e.Value.EffectDefinition = Resources.Load(string.Format("{0}/{1}/{2}", classNames[(int)e.Value.Class].ToString(), folderName, e.Value.Name)) as SkillDefinition;
+            }
         }
     }
 }

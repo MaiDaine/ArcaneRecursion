@@ -9,6 +9,5 @@ namespace ArcaneRecursion
     {
         public ClassNames Name;
         public bool[] AvailableSkills = new bool[6];
-        [HideInInspector] public List<CombatSkillObject> Skills;
     }
 }

@@ -18,7 +18,7 @@
     {
         public OvergrowthEffect(int potency)
         {
-            Name = "Overgrowth";
+            base.SetName();
             Duration = 2;
             Potency = potency;
         }
