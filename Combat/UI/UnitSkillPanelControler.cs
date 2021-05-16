@@ -13,7 +13,6 @@ namespace ArcaneRecursion
         [SerializeField] private GameObject _advanceActionList;
 
         private UnitController _currentUnit = null;
-        private CombatEntity _currentEntity = null;
 
         private readonly string[] _listObjectNames = { "Innate", "Class1", "Class2", "Class3", "End" };
         private const int _baseElemUISize = 65;
@@ -21,7 +20,7 @@ namespace ArcaneRecursion
 
         public void LoadCombatSkill(int index)
         {
-            if (_currentEntity.GameObject.GetComponent<UnitController>().Skills.SelectCombatSkill(index / 5, index % 5))//TODO UI
+            if (_currentUnit.Skills.SelectCombatSkill(index / 5, index % 5))//TODO UI
                 _onSkillSelected.Raise();
             else
                 Debug.Log("SKILL IS ON CD");
@@ -30,9 +29,8 @@ namespace ArcaneRecursion
         public void UpdateAdvancePannel(int index)
         {
             List<UnitSkill> skills = _currentUnit.Skills.AvailableSkills[index];
-
             ShowAdvancePannel();
-            for (int i = index == 0 ? 0 : 1; i < skills.Count; i++)
+            for (int i = 0; i < skills.Count; i++)
             {
                 Transform elem = _advanceActionList.GetComponent<Transform>().Find(i.ToString());
                 elem.gameObject.SetActive(true);
@@ -43,7 +41,6 @@ namespace ArcaneRecursion
                 if (skills[i].Cooldown != 0)
                     elem.GetComponent<UnityEngine.UI.Button>().interactable = false;
                 button.UpdateUI();
-                i++;
             }
             for (int i = skills.Count; i < _maxSkillPerCat; i++)
             {
@@ -59,7 +56,7 @@ namespace ArcaneRecursion
             int index = 0;
 
             _currentUnit = unit;
-            while (unit.Skills.AvailableSkills[index] != null)
+            while (index < unit.Skills.AvailableSkills.Length && unit.Skills.AvailableSkills[index] != null)
             {
                 elem = _baseActionList.GetComponent<Transform>().Find(index.ToString()).gameObject;
                 elem.SetActive(true);

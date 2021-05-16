@@ -22,12 +22,12 @@ namespace ArcaneRecursion
         {
             base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
 
-            Tile[] pathTiles = new Tile[cursor.PreviousTiles.Length - 2];
-            for (int i = 1; i < cursor.PreviousTiles.Length - 1; i++)
-                pathTiles[i - 1] = cursor.PreviousTiles[i];
+            Tile[] pathTiles = new Tile[cursor.AvailableTiles.Length - 2];
+            for (int i = 1; i < cursor.AvailableTiles.Length - 1; i++)
+                pathTiles[i - 1] = cursor.AvailableTiles[i];
 
             Action callback;
-            if (cursor.PreviousTiles.Length > 3)
+            if (cursor.AvailableTiles.Length > 3)
                 callback = OnMoveEnd;
             else
                 callback = VoidCallback;

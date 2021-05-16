@@ -9,8 +9,6 @@ namespace ArcaneRecursion
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             ClassNames className = (ClassNames)property.FindPropertyRelative("Name").enumValueIndex;
-            if (className == ClassNames.Innate)
-                property.isExpanded = false;
 
             int indent = EditorGUI.indentLevel;
             Vector2 currentPos = new Vector2(position.x, position.y);
@@ -19,18 +17,20 @@ namespace ArcaneRecursion
             {
                 property.isExpanded = EditorGUI.Foldout(position, property.isExpanded, "", false);
                 EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), new GUIContent(className.ToString()));
-
                 EditorGUI.indentLevel = 1;
 
                 currentPos.y += 20;
                 EditorGUI.PropertyField(new Rect(currentPos, new Vector2(270, 20)), property.FindPropertyRelative("Name"), new GUIContent("Class"));
                 SerializedProperty availableSkills = property.FindPropertyRelative("AvailableSkills");
                 EditorGUI.indentLevel = 2;
-                for (int i = 0; i < 6; i++)
+                if (className != ClassNames.Innate)
                 {
-                    currentPos.y += 20;
-                    SerializedProperty value = availableSkills.GetArrayElementAtIndex(i);
-                    EditorGUI.PropertyField(new Rect(currentPos, new Vector2(300, 20)), value, new GUIContent(ClassSkillLibrary.ClassSkillsDatas[className][i].Name));
+                    for (int i = 0; i < 6; i++)
+                    {
+                        currentPos.y += 20;
+                        SerializedProperty value = availableSkills.GetArrayElementAtIndex(i);
+                        EditorGUI.PropertyField(new Rect(currentPos, new Vector2(300, 20)), value, new GUIContent(ClassSkillLibrary.ClassSkillsDatas[className][i].Name));
+                    }
                 }
             }
             else

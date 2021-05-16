@@ -88,6 +88,7 @@ namespace ArcaneRecursion
             }
             _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
             _loadedSkill.TilesAffected = tiles;
+            _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _currentUnit.CurrentTile);
         }
 
         public void SelectionClick(InputAction.CallbackContext context)

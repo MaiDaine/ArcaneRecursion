@@ -134,7 +134,7 @@ namespace ArcaneRecursion
                 else
                 {
                     Tile[] updatedPath = new Tile[path.Length - savedPosition];
-                    Array.Copy(path, savedPosition, updatedPath, 0, savedPosition);//TODO USE STUB UNIT
+                    Array.Copy(path, savedPosition, updatedPath, 0, path.Length - savedPosition);//TODO USE STUB UNIT
                     path = updatedPath;
                 }
                 currentSequence.Steps.Add(new SimulatedStep() { Skill = null, Targets = partialPath });

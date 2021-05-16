@@ -55,7 +55,6 @@ namespace ArcaneRecursion
             }
             foreach (Tile tile in tiles)
                 tile.SetTileTmpState(TileTmpState.Select);
-
             return tiles;
         }
 
