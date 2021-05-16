@@ -11,8 +11,8 @@ namespace ArcaneRecursion
         {
             worldState.CurrentUnit.Index = worldState.Allies.Count;
             worldState.CurrentUnit.TeamId = teamId;
-            worldState.CurrentUnit.AvailableAP = controller.CurrentStats.ActionPoint;
-            worldState.CurrentUnit.AvailableMP = controller.CurrentStats.ManaPoint;
+            worldState.CurrentUnit.AvailableAP = controller.CurrentStats.ActionPoints;
+            worldState.CurrentUnit.AvailableMP = controller.CurrentStats.ManaPoints;
             worldState.CurrentUnit.MoveCost = controller.CurrentStats.MovementSpeed;
             worldState.CurrentUnit.Brain = this;
             worldState.CurrentUnit.Controller = controller;

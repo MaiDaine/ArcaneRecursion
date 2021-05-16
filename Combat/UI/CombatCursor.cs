@@ -61,14 +61,14 @@
                     AvailableTiles = new Tile[2] { unit.CurrentTile, toTile };
                 }
                 else
-                    AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile);
+                    AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile, unit.CombatEntity.Team);
                 //AvailableTiles = new Tile[1] { unit.CurrentTile };
                 return;
             }
 
             if (unit.CurrentTile.Coordinates.DistanceTo(toTile.Coordinates) <= skillData.SkillDefinition.SkillStats.CastRange
                 && loadedSkill.CheckRequirements(skillData.SkillDefinition, unit, toTile))
-                AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile);
+                AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile, unit.CombatEntity.Team);
             else
             {
                 toTile.SetTileTmpState(TileTmpState.Invalid);

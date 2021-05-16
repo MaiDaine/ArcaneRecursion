@@ -16,8 +16,8 @@ namespace ArcaneRecursion
         public void SetTargetUnit(UnitController unit)
         {
             gameObject.SetActive(true);
-            _healthBar.currentPercent = (float)((float)unit.CurrentStats.HealthPoint / (float)unit.CombatEntity.UnitStats.HealthPoint) * 100;
-            _manaBar.currentPercent = (float)((float)unit.CurrentStats.ManaPoint / (float)unit.CombatEntity.UnitStats.ManaPoint) * 100;
+            _healthBar.currentPercent = (float)((float)unit.CurrentStats.HealthPoints / (float)unit.CombatEntity.UnitStats.HealthPoints) * 100;
+            _manaBar.currentPercent = (float)((float)unit.CurrentStats.ManaPoints / (float)unit.CombatEntity.UnitStats.ManaPoints) * 100;
 
             int index = 0;
             int max = unit.Status.ActiveEffects.Count < MAX_STATUS_DISPLAY ? unit.Status.ActiveEffects.Count : MAX_STATUS_DISPLAY;

@@ -1,4 +1,6 @@
-﻿namespace ArcaneRecursion
+﻿using UnityEngine;
+
+namespace ArcaneRecursion
 {
     public class UnitRessources
     {
@@ -30,41 +32,47 @@
 
         public bool CheckSkillRessourceRequirement(SkillDefinition skill)
         {
-            return skill.SkillStats.APCost <= UnitStats.ActionPoint
-                && skill.SkillStats.MPCost <= UnitStats.ManaPoint;
+            return skill.SkillStats.APCost <= UnitStats.ActionPoints
+                && skill.SkillStats.MPCost <= UnitStats.ActionPoints;
+        }
+
+        public bool CheckSkillRessourceRequirement(SkillDefinition skill, SkillStats addedCost)
+        {
+            return skill.SkillStats.APCost + addedCost.APCost <= UnitStats.ActionPoints
+                && skill.SkillStats.MPCost + addedCost.MPCost <= UnitStats.ManaPoints;
         }
 
         #region AP
         public bool CanSpendAP(ref int amount)
         {
-            amount = (amount * _statModifierPercent.ActionPoint / 100) + _statModifierFlat.ActionPoint;
-            return amount <= UnitStats.ActionPoint;
+            amount = (amount * _statModifierPercent.ActionPoints / 100) + _statModifierFlat.ActionPoints;
+            return amount <= UnitStats.ActionPoints;
         }
 
         public void OnAPLoss(int amount)
         {
-            UnitStats.ActionPoint -= amount;
+            UnitStats.ActionPoints -= amount;
         }
 
         public void OnAPGain(int amount)
         {
-            UnitStats.ActionPoint += amount;
-            if (UnitStats.ActionPoint > UnitStatsMax.ActionPoint)
-                UnitStatsMax.ActionPoint = UnitStats.ActionPoint;
+            UnitStats.ActionPoints += amount;
+            if (UnitStats.ActionPoints > UnitStatsMax.ActionPoints)
+                UnitStatsMax.ActionPoints = UnitStats.ActionPoints;
         }
         #endregion /* AP */
 
         #region HP
         public bool CanSpendHP(ref int amount)
         {
-            amount = (amount * _statModifierPercent.HealthPoint / 100) + _statModifierFlat.HealthPoint;
-            return amount <= UnitStats.HealthPoint;
+            amount = (amount * _statModifierPercent.HealthPoints / 100) + _statModifierFlat.HealthPoints;
+            return amount <= UnitStats.HealthPoints;
         }
 
         public bool OnHPLoss(int amount, DamageTypes damageType = DamageTypes.None)
         {
-            UnitStats.HealthPoint -= amount;
-            if (UnitStats.HealthPoint <= 0)
+            UnitStats.HealthPoints -= amount;
+            if (UnitStats.HealthPoints <= 0)
             {
                 _unitController.OnDeath();
                 return true;
@@ -74,29 +82,29 @@
 
         public void OnHPGain(int amount)
         {
-            UnitStats.HealthPoint += amount;
-            if (UnitStats.HealthPoint > UnitStatsMax.HealthPoint)
-                UnitStatsMax.HealthPoint = UnitStats.HealthPoint;
+            UnitStats.HealthPoints += amount;
+            if (UnitStats.HealthPoints > UnitStatsMax.HealthPoints)
+                UnitStatsMax.HealthPoints = UnitStats.HealthPoints;
         }
         #endregion /* HP */
 
         #region MP
         public bool CanSpendMP(ref int amount)
         {
-            amount = (amount * _statModifierPercent.ManaPoint / 100) + _statModifierFlat.ManaPoint;
-            return amount <= UnitStats.ManaPoint;
+            amount = (amount * _statModifierPercent.ManaPoints / 100) + _statModifierFlat.ManaPoints;
+            return amount <= UnitStats.ManaPoints;
         }
 
         public void OnMPLoss(int amount)
         {
-            UnitStats.ManaPoint -= amount;
+            UnitStats.ManaPoints -= amount;
         }
 
         public void OnMPGain(int amount)
         {
-            UnitStats.ManaPoint += amount;
-            if (UnitStats.ManaPoint > UnitStatsMax.ManaPoint)
-                UnitStatsMax.ManaPoint = UnitStats.ManaPoint;
+            UnitStats.ManaPoints += amount;
+            if (UnitStats.ManaPoints > UnitStatsMax.ManaPoints)
+                UnitStatsMax.ManaPoints = UnitStats.ManaPoints;
         }
         #endregion /* MP */
 

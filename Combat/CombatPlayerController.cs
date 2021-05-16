@@ -1,7 +1,8 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System;
 using System.Collections.Generic;
-using UnityEngine.InputSystem;
+using System.Linq;
 
 namespace ArcaneRecursion
 {
@@ -60,15 +61,17 @@ namespace ArcaneRecursion
             //TODO Update spell req with unit status
             if (!_currentUnit.Ressources.CheckSkillRessourceRequirement(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition))
             {
+                Debug.Log("Missing ressources");
                 return;
             }
 
+            HashSet<Tile> tilesAffected = new HashSet<Tile>();
             List<Tile> tiles = new List<Tile>();
+            List<Tile> tmpList = new List<Tile>();
             tiles.Add(_currentUnit.CurrentTile);
 
             for (int indexRange = 0; indexRange < _currentUnit.Skills.SelectedSkill.SkillStats.CastRange; indexRange++)
             {
-                List<Tile> tmpList = new List<Tile>();
                 for (int currentTileIndex = 0; currentTileIndex < tiles.Count; currentTileIndex++)
                 {
                     Tile tile = tiles[currentTileIndex];
@@ -84,10 +87,13 @@ namespace ArcaneRecursion
                     }
                 }
                 tiles.Clear();
-                tiles.AddRange(tmpList);
+                foreach (Tile t in tmpList)
+                    if (tilesAffected.Add(t))
+                        tiles.Add(t);
+                tmpList.Clear();
             }
             _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
-            _loadedSkill.TilesAffected = tiles;
+            _loadedSkill.TilesAffected = tilesAffected.ToList();
             _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _currentUnit.CurrentTile);
         }
 
@@ -100,7 +106,8 @@ namespace ArcaneRecursion
                 if (_currentUnit.Skills.SelectedSkill != null)
                 {
                     Tile targetTile = _raycast.GetTileFromCursor();
-                    if (targetTile != null && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, targetTile))
+                    if (targetTile != null && _cursor.AvailableTiles != null
+                        && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, targetTile))
                     {
                         if (targetTile != _currentUnit.CurrentTile)
                             _currentUnit.Movement.SetOrientation(targetTile);

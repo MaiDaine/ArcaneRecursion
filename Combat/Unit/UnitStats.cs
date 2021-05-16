@@ -7,27 +7,27 @@ namespace ArcaneRecursion
     {
         public int CombatSpeed;
         public int MovementSpeed;
-        public int ActionPoint;
-        public int HealthPoint;
-        public int ManaPoint;
+        public int ActionPoints;
+        public int HealthPoints;
+        public int ManaPoints;
 
         #region Init
         public UnitStats()
         {
             CombatSpeed = 0;
             MovementSpeed = 0;
-            ActionPoint = 0;
-            HealthPoint = 0;
-            ManaPoint = 0;
+            ActionPoints = 0;
+            HealthPoints = 0;
+            ManaPoints = 0;
         }
 
         public UnitStats(UnitStats other)
         {
             CombatSpeed = other.CombatSpeed;
             MovementSpeed = other.MovementSpeed;
-            ActionPoint = other.ActionPoint;
-            HealthPoint = other.HealthPoint;
-            ManaPoint = other.ManaPoint;
+            ActionPoints = other.ActionPoints;
+            HealthPoints = other.HealthPoints;
+            ManaPoints = other.ManaPoints;
         }
 
         public static UnitStats DefaultPercentModifier()
@@ -36,9 +36,9 @@ namespace ArcaneRecursion
             {
                 CombatSpeed = 100,
                 MovementSpeed = 100,
-                ActionPoint = 100,
-                HealthPoint = 100,
-                ManaPoint = 100,
+                ActionPoints = 100,
+                HealthPoints = 100,
+                ManaPoints = 100,
             };
         }
         #endregion /* Init */
@@ -47,9 +47,9 @@ namespace ArcaneRecursion
         {
             CombatSpeed += other.CombatSpeed;
             MovementSpeed += other.MovementSpeed;
-            ActionPoint += other.ActionPoint;
-            HealthPoint += other.HealthPoint;
-            ManaPoint += other.ManaPoint;
+            ActionPoints += other.ActionPoints;
+            HealthPoints += other.HealthPoints;
+            ManaPoints += other.ManaPoints;
         }
     }
 }

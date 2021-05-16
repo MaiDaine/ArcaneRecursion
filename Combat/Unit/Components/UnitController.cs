@@ -26,7 +26,7 @@ namespace ArcaneRecursion
         #region UnitTurn Cycle
         public void StartTurn()
         {
-            CurrentStats.ActionPoint = CombatEntity.UnitStats.ActionPoint;
+            CurrentStats.ActionPoints = CombatEntity.UnitStats.ActionPoints;
             Skills.OnStartTurn();
             Status.OnStartTurn();
         }
@@ -38,12 +38,12 @@ namespace ArcaneRecursion
         }
         #endregion /* UnitTurn Cycle */
 
-        public bool CanMoveTo(Tile[] path) { return CurrentStats.ActionPoint >= CalculateMoveCost(path.Length); }
+        public bool CanMoveTo(Tile[] path) { return CurrentStats.ActionPoints >= CalculateMoveCost(path.Length); }
 
         public bool CanMoveTo(Tile[] path, ref int moveCost)
         {
             moveCost = CalculateMoveCost(path.Length);
-            return Ressources.UnitStats.ActionPoint >= moveCost;
+            return Ressources.UnitStats.ActionPoints >= moveCost;
         }
 
         public string Move(Action callback, Tile[] path)
@@ -52,7 +52,7 @@ namespace ArcaneRecursion
 
             if (CanMoveTo(path, ref moveCost))
             {
-                CurrentStats.ActionPoint -= moveCost;
+                CurrentStats.ActionPoints -= moveCost;
                 Movement.MoveTo(callback, path);
                 return null;
             }
