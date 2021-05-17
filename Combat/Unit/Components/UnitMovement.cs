@@ -44,6 +44,16 @@ namespace ArcaneRecursion
             gameObject.transform.LookAt(tile.transform);
         }
 
+        //TODO Animation
+        public void Teleport(Tile destination)
+        {
+            CurrentTile.TileEntity = null;
+            CurrentTile.SetTileState(TileState.Empty);
+            CurrentTile = destination;
+            destination.TileEntity = _entity;
+            transform.position = destination.transform.position;
+        }
+
         #region MonoBehavior LifeCycle
         private void Awake()
         {

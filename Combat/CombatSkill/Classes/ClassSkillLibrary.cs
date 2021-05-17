@@ -179,7 +179,7 @@ namespace ArcaneRecursion
                 {
                     new SkillData(typeof(ArcaneFlow)),
                     new SkillData(typeof(ArcaneBolt)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(ArcaneRush)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
@@ -235,9 +235,6 @@ namespace ArcaneRecursion
 
         public static Dictionary<string, SkillEffectData> ClassEffectsDatas = new Dictionary<string, SkillEffectData>()
         {
-            #region Champion
-            #endregion /* Champion */
-
             #region Druid
             {
                 GetNameFromType(typeof(OvergrowthEffect)),
