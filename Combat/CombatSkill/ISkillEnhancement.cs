@@ -6,10 +6,16 @@ namespace ArcaneRecursion
 {
     public struct SkillModifier
     {
-        public int APFlat;
-        public float APPercent;
-        public int MPFlat;
-        public float MPPercent;
+        public StatusModifierVariable AP;
+        public StatusModifierVariable MP;
+
+        public void Reset()
+        {
+            AP.FlatValue = 0;
+            AP.PercentValue = 100;
+            MP.FlatValue = 0;
+            MP.PercentValue = 100;
+        }
     }
 
     public interface ISkillEnhancement

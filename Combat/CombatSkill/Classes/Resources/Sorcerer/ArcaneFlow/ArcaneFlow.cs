@@ -47,7 +47,7 @@ namespace ArcaneRecursion
 
         public void ApplyEnhancement(ref SkillModifier castEnhancement)
         {
-            castEnhancement.MPPercent -= 0.2f;
+            castEnhancement.MP.PercentValue -= 20;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace ArcaneRecursion
         public List<CombatEffect> ActiveEffects { get; private set; }
 
         private readonly UnitController _unitController;
+        private DefModifier _defModifier;
         private SkillModifier _skillModifier;
 
         #region Init
@@ -27,10 +28,10 @@ namespace ArcaneRecursion
         public SkillStats SetSkillStatsFromCurrentState(SkillStats baseStats)
         {
             SkillStats result = baseStats;
-            result.APCost = baseStats.APCost - _skillModifier.APFlat;
-            result.APCost = (int)(result.APCost * _skillModifier.APPercent);
-            result.MPCost = baseStats.MPCost - _skillModifier.MPFlat;
-            result.MPCost = (int)(result.MPCost * _skillModifier.MPPercent);
+            result.APCost = baseStats.APCost - _skillModifier.AP.FlatValue;
+            result.APCost = result.APCost * _skillModifier.AP.PercentValue / 100;
+            result.MPCost = baseStats.MPCost - _skillModifier.MP.FlatValue;
+            result.MPCost = result.MPCost * _skillModifier.MP.PercentValue / 100;
             //TODO Potency scale
             return result;
         }
@@ -81,15 +82,16 @@ namespace ArcaneRecursion
 
         private void RefreshEnhancement()//TODO APPLY AS UNARY ? //TODO CONTROL REFRESH
         {
-            _skillModifier.APFlat = 0;
-            _skillModifier.APPercent = 1;
-            _skillModifier.MPFlat = 0;
-            _skillModifier.MPPercent = 1;
+            _defModifier.Reset();
+            _skillModifier.Reset();
 
             foreach (CombatEffect e in ActiveEffects)
             {
-                ISkillEnhancement tmp = e as ISkillEnhancement;
-                tmp?.ApplyEnhancement(ref _skillModifier);
+                ISkillEnhancement skillEnhancement = e as ISkillEnhancement;
+                skillEnhancement?.ApplyEnhancement(ref _skillModifier);
+
+                IDefEnhancement defEnhancement = e as IDefEnhancement;
+                defEnhancement?.ApplyEnhancement(ref _defModifier);
             }
         }
     }
