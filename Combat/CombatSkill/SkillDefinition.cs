@@ -15,6 +15,7 @@ namespace ArcaneRecursion
     [Serializable]
     public struct SkillStats
     {
+        public int MinCastRange;
         public int CastRange;
         public int CastTime;
         public int Cooldown;

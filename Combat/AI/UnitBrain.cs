@@ -52,10 +52,12 @@ namespace ArcaneRecursion
         public SimulatedStep EvaluateAction(PlannerWorldState worldState, Tile fromPosition, SkillData skill, ref int score)
         {
             //TODO
+            int distance;
             score = -1;
             foreach (WSUnit unit in worldState.Enemies)
             {
-                if (fromPosition.Coordinates.DistanceTo(worldState.Enemies[worldState.DamageTargetIndex].Position.Coordinates) <= skill.SkillDefinition.SkillStats.CastRange)
+                distance = fromPosition.Coordinates.DistanceTo(worldState.Enemies[worldState.DamageTargetIndex].Position.Coordinates);
+                if (distance >= skill.SkillDefinition.SkillStats.MinCastRange && distance <= skill.SkillDefinition.SkillStats.CastRange)
                 {
                     score = 100;
                     return new SimulatedStep() { Skill = skill, Targets = new Tile[1] { unit.Position } };

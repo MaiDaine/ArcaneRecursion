@@ -80,6 +80,12 @@ namespace ArcaneRecursion
             return false;
         }
 
+        public bool OnKnockbackDamage()
+        {
+            //TODO KnockbackDamage
+            return OnHPLoss(UnitStatsMax.HealthPoints / 10);
+        }
+
         public void OnHPGain(int amount)
         {
             UnitStats.HealthPoints += amount;

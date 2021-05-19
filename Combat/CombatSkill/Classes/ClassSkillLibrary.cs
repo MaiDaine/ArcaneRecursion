@@ -180,7 +180,7 @@ namespace ArcaneRecursion
                     new SkillData(typeof(ArcaneFlow)),
                     new SkillData(typeof(ArcaneBolt)),
                     new SkillData(typeof(ArcaneRush)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(Gust)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }

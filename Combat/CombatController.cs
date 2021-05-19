@@ -4,16 +4,11 @@ namespace ArcaneRecursion
 {
     public class CombatController : MonoBehaviour
     {
-        [SerializeField] protected CombatGrid _grid;
         [SerializeField] protected GameEvent _unitTurnEnd;
 
+        protected CombatGrid _grid;
         protected UnitController _currentUnit = null;
         protected CombatCursor _cursor;
-
-        protected virtual void Awake()
-        {
-            _cursor = new CombatCursor(_grid);
-        }
 
         public virtual void UnitTurn(CombatEntity unit)
         {
@@ -28,5 +23,16 @@ namespace ArcaneRecursion
             _currentUnit.Status.OnEndTurn();
             _unitTurnEnd.Raise();
         }
+
+        #region MonoBehaviorLifeCycle
+        protected virtual void Awake()
+        {
+            _cursor = new CombatCursor();
+        }
+        protected virtual void Start()
+        {
+            _grid = CombatGrid.Instance;
+        }
+        #endregion /* MonoBehaviorLifeCycle */
     }
 }

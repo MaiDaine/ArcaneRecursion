@@ -59,6 +59,26 @@ namespace ArcaneRecursion
             return "Not enought AP";
         }
 
+        public void OnKnockBack(HexCoordinates direction)
+        {
+            CombatGrid grid = CombatGrid.Instance;
+            Tile toTile = null;
+            int toX = CurrentTile.Coordinates.X + direction.X;
+            int toZ = CurrentTile.Coordinates.Z + direction.Z;
+
+            if (toX >= 0 && toX <= grid.Width && toZ >= 0 && toZ <= grid.Height)
+            {
+                toTile = grid.GetTilefromCoordinate(toX, toZ);
+                if (toTile.State == TileState.Empty)
+                {
+                    //TODO Travel trigger + animation
+                    Movement.Teleport(toTile);
+                    return;
+                }
+            }
+            Ressources.OnKnockbackDamage();
+        }
+
         public void OnDeath()
         {
             Debug.Log("TODO UNIT DEATH"); //TODO 

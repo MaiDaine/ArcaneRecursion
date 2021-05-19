@@ -6,9 +6,9 @@
 
         private readonly CombatGrid _grid;
 
-        public CombatCursor(CombatGrid grid)
+        public CombatCursor()
         {
-            _grid = grid;
+            _grid = CombatGrid.Instance;
         }
 
         public void ClearPrevious()
@@ -66,7 +66,9 @@
                 return;
             }
 
-            if (unit.CurrentTile.Coordinates.DistanceTo(toTile.Coordinates) <= skillData.SkillDefinition.SkillStats.CastRange
+            int distance = unit.CurrentTile.Coordinates.DistanceTo(toTile.Coordinates);
+            if (distance >= skillData.SkillDefinition.SkillStats.MinCastRange
+                && distance <= skillData.SkillDefinition.SkillStats.CastRange
                 && loadedSkill.CheckRequirements(skillData.SkillDefinition, unit, toTile))
                 AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile, unit.CombatEntity.Team);
             else

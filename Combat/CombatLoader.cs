@@ -6,7 +6,6 @@ namespace ArcaneRecursion
 {
     public class CombatLoader : MonoBehaviour //TODO {Encounters}
     {
-        public CombatGrid Grid;
         public CombatLoaderData Data;
         public NodeDefinition NotImplemented;
         public List<ICombatTurnEntity> PlayerUnits;
@@ -25,7 +24,7 @@ namespace ArcaneRecursion
                 UnitController controller = unit.GetComponent<UnitController>();
                 CombatEntity combatEntity = new CombatEntity(unit, e, new CombatTurnEntityStore(1, tmp, e.Icone));
                 //CombatEntity combatEntity = new CombatEntity(unit, e, 1, tmp);
-                controller.Init(e, combatEntity, Grid.Tiles[POS[tmp]]);
+                controller.Init(e, combatEntity, CombatGrid.Instance.Tiles[POS[tmp]]);
                 controller.Movement.SetOrientation(controller.CurrentTile.SearchData.GetNeighbor(HexDirection.E));
                 PlayerUnits.Add(combatEntity);
                 tmp++;
@@ -39,7 +38,7 @@ namespace ArcaneRecursion
                 UnitController controller = unit.GetComponent<UnitController>();
                 CombatEntity combatEntity = new AICombatEntity(unit, e, new CombatTurnEntityStore(2, tmp, e.Icone, e.FormationPosition));
                 //CombatEntity combatEntity = new CombatEntity(unit, e, 2, tmp);
-                controller.Init(e, combatEntity, Grid.Tiles[POS[tmp]]);
+                controller.Init(e, combatEntity, CombatGrid.Instance.Tiles[POS[tmp]]);
                 controller.Movement.SetOrientation(controller.CurrentTile.SearchData.GetNeighbor(HexDirection.W));
                 EnemyUnits.Add(combatEntity);
                 tmp++;

@@ -81,7 +81,8 @@ namespace ArcaneRecursion
 
                         if (tmp != null)
                         {
-                            tmp.SetTileTmpState(TileTmpState.SkillRange);
+                            if (indexRange >= _currentUnit.Skills.SelectedSkill.SkillStats.CastRange)
+                                tmp.SetTileTmpState(TileTmpState.SkillRange);
                             tmpList.Add(tmp);
                         }
                     }

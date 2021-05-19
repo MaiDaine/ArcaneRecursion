@@ -18,7 +18,7 @@ namespace ArcaneRecursion
     {
         public TileOffset[] TileOffsets;
         public TileOffset Movement;
-        public SkillMovementType MovementType;
+        public SkillCursorType MovementType;
 
         public Tile[] Apply(CombatGrid grid, UnitController unit, Tile toTile, int unitTeamId)
         {
@@ -27,8 +27,9 @@ namespace ArcaneRecursion
 
             return MovementType switch
             {
-                SkillMovementType.Directional => DirectionalApply(grid, unit.CurrentTile, toTile, unitTeamId),
-                SkillMovementType.Projectile => PathingApply(grid, unit.CurrentTile, toTile, unitTeamId),
+                SkillCursorType.Directional => DirectionalApply(grid, unit.CurrentTile, toTile, unitTeamId),
+                SkillCursorType.Projectile => PathingApply(grid, unit.CurrentTile, toTile, unitTeamId),
+                SkillCursorType.Radial => RadialApply(grid, unit.CurrentTile, toTile, unitTeamId),
                 _ => BasicApply(grid, toTile, unitTeamId),
             };
         }
@@ -83,10 +84,11 @@ namespace ArcaneRecursion
 
             int offsetX = CalculateDirection(fromTile.Coordinates.X, toTile.Coordinates.X);
             int offsetZ = CalculateDirection(fromTile.Coordinates.Z, toTile.Coordinates.Z);
+            Debug.Log(offsetX + " " + offsetZ);
             for (int i = 0; i < TileOffsets.Length; i++)
             {
-                int targetZ = toTile.Coordinates.Z + (TileOffsets[i].Z * offsetZ);
                 int targetX = toTile.Coordinates.X + (TileOffsets[i].X * offsetX);
+                int targetZ = toTile.Coordinates.Z + (TileOffsets[i].Z * offsetZ);
                 int tmpX = targetX + (targetZ / 2);
                 if (tmpX >= 0 && tmpX < grid.Width && targetZ >= 0 && targetZ < grid.Height)
                 {
@@ -143,6 +145,48 @@ namespace ArcaneRecursion
                         tiles.Add(tile);
                     else
                         return null;
+                }
+            }
+            foreach (Tile t in tiles)
+                t.SetTileTmpState(TileTmpState.Select);
+            return tiles.ToArray();
+        }
+
+        //Base position is NE
+        private Tile[] RadialApply(CombatGrid grid, Tile fromTile, Tile toTile, int unitTeamId)
+        {
+            Func<HexCoordinates, HexCoordinates> getRotation = null;
+            List<Tile> tiles = new List<Tile>();
+
+            for (int i = 0; i < 6; i++)
+                if (fromTile.SearchData.Neighbors[i] == toTile)
+                {
+                    getRotation = (HexDirection)i switch
+                    {
+                        HexDirection.NE => null,
+                        HexDirection.E => HexCoordinates.RotateClockwise60,
+                        HexDirection.SE => HexCoordinates.RotateClockwise120,
+                        HexDirection.SW => HexCoordinates.Rotate180,
+                        HexDirection.W => HexCoordinates.RotateCounterClockwise120,
+                        HexDirection.NW => HexCoordinates.RotateCounterClockwise60,
+                        _ => null,
+                    };
+                    break;
+                }
+
+            for (int i = 0; i < TileOffsets.Length; i++)
+            {
+                HexCoordinates offset = new HexCoordinates(TileOffsets[i].X, TileOffsets[i].Z);
+                if (getRotation != null)
+                    offset = getRotation(offset);
+                HexCoordinates targetOffset = new HexCoordinates(toTile.Coordinates.X + offset.X, toTile.Coordinates.Z + offset.Z);
+
+                int tmpX = targetOffset.X + (targetOffset.Z / 2);
+                if (tmpX >= 0 && tmpX < grid.Width && targetOffset.Z >= 0 && targetOffset.Z < grid.Height)
+                {
+                    Tile tile = grid.GetTilefromCoordinate(targetOffset.X, targetOffset.Z);
+                    if (ValidateTileState(tile, TileOffsets[i].TargetRequireType, unitTeamId))
+                        tiles.Add(tile);
                 }
             }
             foreach (Tile t in tiles)
