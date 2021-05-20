@@ -11,7 +11,7 @@ namespace ArcaneRecursion
     #endregion /* Grid */
 
     #region  Skill
-    public enum DamageTypes { None, Physical, Wind, Earth, Water, Fire, Arcane }
+    public enum DamageTypes { Magical, Earth, Fire, Water, Wind, Physical, Arcane }
     public enum SkillCursorType { None, Directional, Projectile, Radial }
     public enum SkillType { Passiv, Instant, Channel, Delayed }
     public enum SkillTag { AOE, Buff, Control, Damage, Debuff, Def, Heal, Move }

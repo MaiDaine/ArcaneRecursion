@@ -21,7 +21,7 @@ namespace ArcaneRecursion
             foreach (Tile tile in cursor.AvailableTiles)
                 if (tile.TileEntity != null && tile != caster.CurrentTile)
                 {
-                    tile.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnHPLoss(skillDefinition.SkillStats.Potency);
+                    tile.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnDamageTaken(skillDefinition.SkillStats.Potency);
                     targetCount++;
                 }
 

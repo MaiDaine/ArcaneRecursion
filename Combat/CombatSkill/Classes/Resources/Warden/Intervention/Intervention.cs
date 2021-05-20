@@ -38,7 +38,6 @@ namespace ArcaneRecursion
                 callback = VoidCallback;
 
             _caster = caster;
-            _targetTile = pathTiles[pathTiles.Length - 1];
             caster.Movement.MoveTo(callback, pathTiles);
         }
 
@@ -51,18 +50,16 @@ namespace ArcaneRecursion
 
     public class InterventionEffect : CombatEffect
     {
-        private int _potency;
-
         public InterventionEffect(int potency)
         {
             base.SetName();
             Duration = 2;
-            _potency = potency;
+            Potency = potency;
         }
 
         public void ApplyEnhancement(ref DefModifier defEnhancement)
         {
-            defEnhancement.Res.PercentValue += _potency;
+            defEnhancement.Magical.PercentValue += Potency;
         }
     }
 }

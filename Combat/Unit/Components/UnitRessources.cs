@@ -8,15 +8,13 @@ namespace ArcaneRecursion
         public UnitStats UnitStatsMax { get; private set; }
 
         private readonly UnitController _unitController;
-        private readonly UnitStats _statModifierFlat;
-        private readonly UnitStats _statModifierPercent;
+        private readonly UnitStatsModifier _statsModifier;
 
         #region Init
         public UnitRessources(UnitController controller)
         {
             _unitController = controller;
-            _statModifierFlat = new UnitStats();
-            _statModifierPercent = UnitStats.DefaultPercentModifier();
+            _statsModifier.Reset();
         }
 
         public void LoadStats(UnitStats stats)
@@ -26,10 +24,7 @@ namespace ArcaneRecursion
         }
         #endregion /* Init */
 
-        public void ApplyFlatModifier(UnitStats modifier) { _statModifierFlat.ApplyModifier(modifier); }
-
-        public void ApplyPercentModifier(UnitStats modifier) { _statModifierPercent.ApplyModifier(modifier); }
-
+        #region RessourceRequirement
         public bool CheckSkillRessourceRequirement(SkillDefinition skill)
         {
             return skill.SkillStats.APCost <= UnitStats.ActionPoints
@@ -41,11 +36,12 @@ namespace ArcaneRecursion
             return skill.SkillStats.APCost + addedCost.APCost <= UnitStats.ActionPoints
                 && skill.SkillStats.MPCost + addedCost.MPCost <= UnitStats.ManaPoints;
         }
+        #endregion /* RessourceRequirement */
 
         #region AP
         public bool CanSpendAP(ref int amount)
         {
-            amount = (amount * _statModifierPercent.ActionPoints / 100) + _statModifierFlat.ActionPoints;
+            amount = (amount * _statsModifier.ActionPoints.PercentValue / 100) + _statsModifier.ActionPoints.FlatValue;
             return amount <= UnitStats.ActionPoints;
         }
 
@@ -65,11 +61,11 @@ namespace ArcaneRecursion
         #region HP
         public bool CanSpendHP(ref int amount)
         {
-            amount = (amount * _statModifierPercent.HealthPoints / 100) + _statModifierFlat.HealthPoints;
+            amount = (amount * _statsModifier.HealthPoints.PercentValue / 100) + _statsModifier.HealthPoints.FlatValue;
             return amount <= UnitStats.HealthPoints;
         }
 
-        public bool OnHPLoss(int amount, DamageTypes damageType = DamageTypes.None)
+        public bool OnHPLoss(int amount)
         {
             UnitStats.HealthPoints -= amount;
             if (UnitStats.HealthPoints <= 0)
@@ -97,7 +93,7 @@ namespace ArcaneRecursion
         #region MP
         public bool CanSpendMP(ref int amount)
         {
-            amount = (amount * _statModifierPercent.ManaPoints / 100) + _statModifierFlat.ManaPoints;
+            amount = (amount * _statsModifier.ManaPoints.PercentValue / 100) + _statsModifier.ManaPoints.FlatValue;
             return amount <= UnitStats.ManaPoints;
         }
 
@@ -114,5 +110,14 @@ namespace ArcaneRecursion
         }
         #endregion /* MP */
 
+        public bool OnDamageTaken(int amount, DamageTypes damageType = DamageTypes.Magical)
+        {
+            if (damageType != DamageTypes.Arcane)
+                amount = (100 - _unitController.CurrentStats.Defences[(int)damageType]) * amount / 100;
+
+            // Shield part
+
+            return OnHPLoss(amount);
+        }
     }
 }

@@ -5,9 +5,9 @@ namespace ArcaneRecursion
     public class UnitStatus
     {
         public List<CombatEffect> ActiveEffects { get; private set; }
+        public DefModifier DefModifier;
 
         private readonly UnitController _unitController;
-        private DefModifier _defModifier;
         private SkillModifier _skillModifier;
 
         #region Init
@@ -82,7 +82,7 @@ namespace ArcaneRecursion
 
         private void RefreshEnhancement()//TODO APPLY AS UNARY ? //TODO CONTROL REFRESH
         {
-            _defModifier.Reset();
+            DefModifier.Reset();
             _skillModifier.Reset();
 
             foreach (CombatEffect e in ActiveEffects)
@@ -91,7 +91,14 @@ namespace ArcaneRecursion
                 skillEnhancement?.ApplyEnhancement(ref _skillModifier);
 
                 IDefEnhancement defEnhancement = e as IDefEnhancement;
-                defEnhancement?.ApplyEnhancement(ref _defModifier);
+                defEnhancement?.ApplyEnhancement(ref DefModifier);
+            }
+
+            StatusModifierVariable modifier;
+            for (int i = 0; i < _unitController.CurrentStats.Defences.Length; i++)
+            {
+                modifier = DefModifier.GetModifier((DamageTypes)i);
+                _unitController.CurrentStats.Defences[i] = modifier.FlatValue + (modifier.PercentValue / 100);
             }
         }
     }

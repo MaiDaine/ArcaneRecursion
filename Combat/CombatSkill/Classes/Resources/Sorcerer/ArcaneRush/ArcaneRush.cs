@@ -17,7 +17,7 @@ namespace ArcaneRecursion
 
             caster.Movement.Teleport(targetTile);
             foreach (Tile tile in cursor.AvailableTiles)
-                tile?.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnHPLoss(skillDefinition.SkillStats.Potency);
+                tile?.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnDamageTaken(skillDefinition.SkillStats.Potency, DamageTypes.Arcane);
         }
     }
 }

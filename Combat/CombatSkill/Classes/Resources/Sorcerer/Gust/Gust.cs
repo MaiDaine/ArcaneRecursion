@@ -20,7 +20,7 @@ namespace ArcaneRecursion
                     );
                     UnitController target = tile.TileEntity.GameObject.GetComponent<UnitController>();
 
-                    if (!target.Ressources.OnHPLoss(skillDefinition.SkillStats.Potency))
+                    if (!target.Ressources.OnDamageTaken(skillDefinition.SkillStats.Potency, DamageTypes.Wind))
                         target.OnKnockBack(direction);
                 }
             }

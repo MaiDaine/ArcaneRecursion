@@ -8,5 +8,11 @@ namespace ArcaneRecursion
     {
         public int FlatValue;
         public int PercentValue;
+
+        public void Reset()
+        {
+            FlatValue = 0;
+            PercentValue = 100;
+        }
     }
 }

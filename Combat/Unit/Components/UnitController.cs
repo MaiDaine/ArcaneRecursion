@@ -11,6 +11,7 @@ namespace ArcaneRecursion
         public UnitSkills Skills { get; private set; }
         public UnitStatus Status { get; private set; }
         public UnitStats CurrentStats { get { return Ressources.UnitStats; } }
+        public DefModifier Defences { get { return Status.DefModifier; } }
         public Tile CurrentTile { get { return Movement.CurrentTile; } }
 
         #region Init
