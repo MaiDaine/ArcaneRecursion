@@ -209,7 +209,7 @@ namespace ArcaneRecursion
                 {
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(Intervention)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(ArmorOverload)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
@@ -252,6 +252,17 @@ namespace ArcaneRecursion
                 new SkillEffectData(typeof(ArcaneFlowEffect), ClassNames.Sorcerer)
             },
             #endregion /* Sorcerer */
+
+            #region Warden
+            {
+                GetNameFromType(typeof(InterventionEffect)),
+                new SkillEffectData(typeof(InterventionEffect), ClassNames.Warden)
+            },
+            {
+                GetNameFromType(typeof(ArmorOverloadEffect)),
+                new SkillEffectData(typeof(ArmorOverloadEffect), ClassNames.Warden)
+            }
+            #endregion /* Warden */
         };
 
         public static string GetNameFromType(Type type) { return type.ToString().Replace("ArcaneRecursion.", ""); }
