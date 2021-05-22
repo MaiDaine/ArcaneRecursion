@@ -62,6 +62,7 @@ namespace ArcaneRecursion
             if (!_currentUnit.Ressources.CheckSkillRessourceRequirement(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition))
             {
                 Debug.Log("Missing ressources");
+                _currentUnit.Skills.ClearSelectedSkill();
                 return;
             }
 
@@ -118,7 +119,6 @@ namespace ArcaneRecursion
                         CombatUIController.Instance.CurrentUnitRessourcesPanelController.SetTargetUnit(_currentUnit);
                         CancelAction();
                         UpdateCursorPosition();
-                        CombatUIController.Instance.CurrentUnitRessourcesPanelController.SetTargetUnit(_currentUnit);
                     }
                 }
                 else if (_canInteract && _currentUnit != null && _currentTile && _currentTile.State == TileState.Empty)

@@ -40,7 +40,7 @@ namespace ArcaneRecursion
                 DamageTypes.Wind => Wind,
                 DamageTypes.Physical => Physical,
                 _ => Magical
-            }
+            };
         }
     }
 

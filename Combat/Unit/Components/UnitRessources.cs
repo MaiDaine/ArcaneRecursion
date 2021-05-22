@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace ArcaneRecursion
 {
@@ -6,6 +7,7 @@ namespace ArcaneRecursion
     {
         public UnitStats UnitStats { get; private set; }
         public UnitStats UnitStatsMax { get; private set; }
+        public List<ShieldCombatEffect> Shields { get; private set; }
 
         private readonly UnitController _unitController;
         private readonly UnitStatsModifier _statsModifier;
@@ -15,6 +17,7 @@ namespace ArcaneRecursion
         {
             _unitController = controller;
             _statsModifier.Reset();
+            Shields = new List<ShieldCombatEffect>();
         }
 
         public void LoadStats(UnitStats stats)
@@ -110,14 +113,24 @@ namespace ArcaneRecursion
         }
         #endregion /* MP */
 
+        #region ShieldEffect
+        public void AddShieldEffect(ShieldCombatEffect effect) { Shields.Add(effect); }
+        public void RemoveShieldEffect(ShieldCombatEffect effect) { Shields.Remove(effect); }
+        #endregion /* ShieldEffect */
+
         public bool OnDamageTaken(int amount, DamageTypes damageType = DamageTypes.Magical)
         {
             if (damageType != DamageTypes.Arcane)
                 amount = (100 - _unitController.CurrentStats.Defences[(int)damageType]) * amount / 100;
 
-            // Shield part
+            while (Shields.Count > 0)
+                if (Shields[Shields.Count - 1].OnDamageTaken(ref amount, damageType))
+                    Shields.RemoveAt(Shields.Count - 1);
 
-            return OnHPLoss(amount);
+            if (amount > 0)
+                return OnHPLoss(amount);
+
+            return false;
         }
     }
 }

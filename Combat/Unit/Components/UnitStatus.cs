@@ -21,7 +21,9 @@ namespace ArcaneRecursion
         public void ApplyEffect(CombatEffect effect)
         {
             ActiveEffects.Add(effect);
-            if (effect is ISkillEnhancement)
+            if (effect is ShieldCombatEffect)
+                _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
+            if (effect is ISkillEnhancement || effect is IDefEnhancement)
                 RefreshEnhancement();
         }
 
@@ -39,11 +41,6 @@ namespace ArcaneRecursion
         #region UnitTurn Cycle
         public void OnStartTurn()
         {
-            RefreshEnhancement();
-        }
-
-        public void OnEndTurn()
-        {
             int currentSize = ActiveEffects.Count;
             for (int i = 0; i < currentSize; i++)
             {
@@ -51,11 +48,19 @@ namespace ArcaneRecursion
                 {
                     ActiveEffects[i].Duration--;
                     if (ActiveEffects[i].Duration == 0)
+                    {
                         ActiveEffects[i].OnDurationEnd(_unitController);
+                        if (ActiveEffects[i] is ShieldCombatEffect)
+                            _unitController.Ressources.RemoveShieldEffect(ActiveEffects[i] as ShieldCombatEffect);
+                    }
                 }
             }
             ActiveEffects.RemoveAll(e => e.Duration == 0);
+
+            RefreshEnhancement();
         }
+
+        public void OnEndTurn() { }
         #endregion /* UnitTurn Cycle */
 
         #region OnEffects
