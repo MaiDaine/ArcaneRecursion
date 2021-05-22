@@ -3,8 +3,18 @@ using System;
 
 namespace ArcaneRecursion
 {
-    public static class ClassSkillLibrary
+    public static class SkillLibrary
     {
+        public static Dictionary<string, SkillData> InnateSkills = new Dictionary<string, SkillData>()
+        {
+            {
+                GetNameFromType(typeof(BasicAtk)),
+                new SkillData(typeof(BasicAtk))
+            }
+            #region Weapons
+            #endregion /* Weapons */
+        };
+
         public static Dictionary<ClassNames, SkillData[]> ClassSkillsDatas = new Dictionary<ClassNames, SkillData[]>()
         {
             #region ArcaneKnight
@@ -266,6 +276,16 @@ namespace ArcaneRecursion
         };
 
         public static string GetNameFromType(Type type) { return type.ToString().Replace("ArcaneRecursion.", ""); }
+
+        public static List<SkillData> GenerateInnateSkills(List<string> skills)
+        {
+            List<SkillData> result = new List<SkillData>();
+
+            foreach (string skillName in skills)
+                result.Add(InnateSkills[skillName]);
+
+            return result;
+        }
     }
 
     [Serializable]
@@ -277,7 +297,7 @@ namespace ArcaneRecursion
 
         public SkillData(Type skill)
         {
-            Name = ClassSkillLibrary.GetNameFromType(skill);
+            Name = SkillLibrary.GetNameFromType(skill);
             Skill = skill;
             SkillDefinition = null;
         }
@@ -293,7 +313,7 @@ namespace ArcaneRecursion
 
         public SkillEffectData(Type skill, ClassNames className)
         {
-            Name = ClassSkillLibrary.GetNameFromType(skill);
+            Name = SkillLibrary.GetNameFromType(skill);
             Class = className;
             Skill = skill;
             EffectDefinition = null;

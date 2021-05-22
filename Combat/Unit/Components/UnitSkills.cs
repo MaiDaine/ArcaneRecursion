@@ -23,24 +23,27 @@ namespace ArcaneRecursion
         public List<UnitSkill>[] AvailableSkills { get; private set; }
         public UnitSkill SelectedSkill { get; private set; }
 
-        public UnitSkills(List<ClassBuild> build, UnitController unit)
+        public UnitSkills(List<SkillData> innateSkills, List<ClassBuild> build, UnitController unit)
         {
-            //TODO Innate skills
             AvailableSkills = new List<UnitSkill>[4] { new List<UnitSkill>(), null, null, null };
             BuildClassNames = new ClassNames[4] { ClassNames.Innate, ClassNames.Innate, ClassNames.Innate, ClassNames.Innate };
+
+            foreach (SkillData e in innateSkills)
+                AvailableSkills[0].Add(new UnitSkill(e));
+
             for (int classIndex = 1; classIndex < build.Count; classIndex++)
             {
                 BuildClassNames[classIndex] = build[classIndex].Name;
                 AvailableSkills[classIndex] = new List<UnitSkill>();
                 if (build[classIndex].AvailableSkills[0])
                 {
-                    SkillData skill = ClassSkillLibrary.ClassSkillsDatas[build[classIndex].Name][0];
+                    SkillData skill = SkillLibrary.ClassSkillsDatas[build[classIndex].Name][0];
                     ((CombatSkill)Activator.CreateInstance(skill.Skill)).OnSkillLaunched(skill.SkillDefinition, unit, null, null);
                 }
                 for (int i = 1; i < 6; i++)
                 {
                     if (build[classIndex].AvailableSkills[i])
-                        AvailableSkills[classIndex].Add(new UnitSkill(ClassSkillLibrary.ClassSkillsDatas[build[classIndex].Name][i]));
+                        AvailableSkills[classIndex].Add(new UnitSkill(SkillLibrary.ClassSkillsDatas[build[classIndex].Name][i]));
                 }
             }
             ClearSelectedSkill();

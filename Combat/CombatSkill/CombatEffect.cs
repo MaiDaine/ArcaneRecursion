@@ -8,7 +8,7 @@
 
         protected void SetName()
         {
-            Name = ClassSkillLibrary.GetNameFromType(this.GetType());
+            Name = SkillLibrary.GetNameFromType(this.GetType());
         }
 
         public virtual bool OnDispell(UnitController unit) { return false; }

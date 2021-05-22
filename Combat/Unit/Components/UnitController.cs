@@ -20,7 +20,7 @@ namespace ArcaneRecursion
             CombatEntity = entity;
             Movement.Init(tile, entity);
             Ressources.LoadStats(entity.UnitStats);
-            Skills = new UnitSkills(unit.Build, this);
+            Skills = new UnitSkills(SkillLibrary.GenerateInnateSkills(unit.InnateSkills), unit.Build, this);
         }
         #endregion /* Init */
 

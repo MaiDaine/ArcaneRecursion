@@ -10,6 +10,7 @@ namespace ArcaneRecursion
         public GameObject Prefab;
         public Sprite Icone;
         public UnitStats Stats;
+        public List<string> InnateSkills;
         public List<ClassBuild> Build;
     }
 }

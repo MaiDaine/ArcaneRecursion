@@ -24,7 +24,7 @@ namespace ArcaneRecursion
             UIStatus[] status = _statusBar.GetComponentsInChildren<UIStatus>(true);
             while (index < max)
             {
-                status[index].UpdateState(ClassSkillLibrary.ClassEffectsDatas[unit.Status.ActiveEffects[index].Name].EffectDefinition);
+                status[index].UpdateState(SkillLibrary.ClassEffectsDatas[unit.Status.ActiveEffects[index].Name].EffectDefinition);
                 status[index].gameObject.SetActive(true);
                 index++;
             }

@@ -29,7 +29,7 @@ namespace ArcaneRecursion
                     {
                         currentPos.y += 20;
                         SerializedProperty value = availableSkills.GetArrayElementAtIndex(i);
-                        EditorGUI.PropertyField(new Rect(currentPos, new Vector2(300, 20)), value, new GUIContent(ClassSkillLibrary.ClassSkillsDatas[className][i].Name));
+                        EditorGUI.PropertyField(new Rect(currentPos, new Vector2(300, 20)), value, new GUIContent(SkillLibrary.ClassSkillsDatas[className][i].Name));
                     }
                 }
             }
