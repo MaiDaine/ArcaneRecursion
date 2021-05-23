@@ -115,7 +115,10 @@ namespace ArcaneRecursion
                             _currentUnit.Movement.SetOrientation(targetTile);
 
                         _loadedSkill.OnSkillLaunched(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _cursor, targetTile);
-                        _currentUnit.Status.OnSkillLaunched();
+                        if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Atk))
+                            _currentUnit.Status.OnAtkLaunched();
+                        else
+                            _currentUnit.Status.OnSkillLaunched();
                         CombatUIController.Instance.CurrentUnitRessourcesPanelController.SetTargetUnit(_currentUnit);
                         CancelAction();
                         UpdateCursorPosition();
@@ -123,6 +126,12 @@ namespace ArcaneRecursion
                 }
                 else if (_canInteract && _currentUnit != null && _currentTile && _currentTile.State == TileState.Empty)
                 {
+                    if (_currentUnit.Status.StatusSummary.IsRoot)
+                    {
+                        Debug.Log("Unit is root");
+                        return;
+                    }
+
                     string error = _currentUnit.Move(UnlockInteraction, _grid.FindPath(_currentUnit.CurrentTile, _currentTile));
                     if (error != null)
                     {

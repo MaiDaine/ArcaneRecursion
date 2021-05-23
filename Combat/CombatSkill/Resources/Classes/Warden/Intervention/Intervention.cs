@@ -11,7 +11,7 @@ namespace ArcaneRecursion
 
         public override bool CheckRequirements(SkillDefinition skillDefinition, UnitController unit, Tile targetTile)
         {
-            if (targetTile?.TileEntity != null)
+            if (!unit.Status.StatusSummary.IsRoot && targetTile?.TileEntity != null)
             {
                 if (targetTile.TileEntity.Team == unit.CombatEntity.Team)
                     _targetUnit = targetTile.TileEntity.GameObject.GetComponent<UnitController>();

@@ -70,10 +70,10 @@ namespace ArcaneRecursion
                     CurrentTile.SetTileState(TileState.Empty);
                     CurrentTile.TileEntity = null;
 
+                    SetOrientation(_path[_currentPathIndex]);
                     CurrentTile = _path[_currentPathIndex];
                     CurrentTile.SetTileState(TileState.Occupied);
                     CurrentTile.TileEntity = _entity;
-                    SetOrientation(CurrentTile);
 
                     _currentPathIndex++;
                     if (_currentPathIndex == _path.Length)

@@ -20,6 +20,8 @@ namespace ArcaneRecursion
 
         public List<Tile[]> EvaluateBestPosition(PlannerWorldState worldState, CombatGrid grid)
         {
+            if (worldState.CurrentUnit.Controller.Status.StatusSummary.IsRoot)
+                return new List<Tile[]> { new Tile[1] { worldState.CurrentUnit.Controller.CurrentTile } };
             return worldState.CurrentGoal switch
             {
                 TeamGoal.Poke => FindPokePosition(worldState, grid),
