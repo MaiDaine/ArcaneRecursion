@@ -37,10 +37,10 @@ namespace ArcaneRecursion
                 ClassNames.Augmenter,
                 new SkillData[6]
                 {
+                    new SkillData(typeof(ChargedBlade)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(Dive)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
@@ -245,6 +245,21 @@ namespace ArcaneRecursion
 
         public static Dictionary<string, SkillEffectData> ClassEffectsDatas = new Dictionary<string, SkillEffectData>()
         {
+            #region Augmenter
+            {
+                GetNameFromType(typeof(ChargedBladeEffectPassiv)),
+                new SkillEffectData(typeof(ChargedBladeEffectPassiv), ClassNames.Augmenter)
+            },
+            {
+                GetNameFromType(typeof(ChargedBladeEffect)),
+                new SkillEffectData(typeof(ChargedBladeEffect), ClassNames.Augmenter)
+            },
+            {
+                GetNameFromType(typeof(DiveEffect)),
+                new SkillEffectData(typeof(DiveEffect), ClassNames.Augmenter)
+            },
+            #endregion /* Augmenter */
+
             #region Druid
             {
                 GetNameFromType(typeof(OvergrowthEffect)),

@@ -17,7 +17,7 @@ namespace ArcaneRecursion
         public ArcaneFlowEffectPassiv()
         {
             base.SetName();
-            Duration = -1;
+            Duration = PASSIVEFFECT;
         }
 
         public override bool OnDispell(UnitController unit)
