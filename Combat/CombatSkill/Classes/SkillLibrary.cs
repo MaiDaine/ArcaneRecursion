@@ -70,7 +70,7 @@ namespace ArcaneRecursion
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(Interception)),
                     new SkillData(typeof(Whirlwind)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(PowerArmor)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
@@ -259,6 +259,13 @@ namespace ArcaneRecursion
                 new SkillEffectData(typeof(DiveEffect), ClassNames.Augmenter)
             },
             #endregion /* Augmenter */
+
+            #region Champion
+            {
+                GetNameFromType(typeof(PowerArmorEffect)),
+                new SkillEffectData(typeof(PowerArmorEffect), ClassNames.Champion)
+            },
+            #endregion /* Champion */
 
             #region Druid
             {

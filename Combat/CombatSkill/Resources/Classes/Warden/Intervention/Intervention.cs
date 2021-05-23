@@ -48,7 +48,7 @@ namespace ArcaneRecursion
         }
     }
 
-    public class InterventionEffect : CombatEffect
+    public class InterventionEffect : CombatEffect, IDefEnhancement
     {
         public InterventionEffect(int potency)
         {
