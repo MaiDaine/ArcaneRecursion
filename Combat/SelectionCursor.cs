@@ -84,7 +84,6 @@ namespace ArcaneRecursion
 
             int offsetX = CalculateDirection(fromTile.Coordinates.X, toTile.Coordinates.X);
             int offsetZ = CalculateDirection(fromTile.Coordinates.Z, toTile.Coordinates.Z);
-            Debug.Log(offsetX + " " + offsetZ);
             for (int i = 0; i < TileOffsets.Length; i++)
             {
                 int targetX = toTile.Coordinates.X + (TileOffsets[i].X * offsetX);
