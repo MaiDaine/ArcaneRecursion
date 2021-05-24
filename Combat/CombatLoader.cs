@@ -67,9 +67,9 @@ namespace ArcaneRecursion
                 for (int skillIndex = 0; skillIndex < 6; skillIndex++)
                 {
                     skillName = SkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].Name;
-                    skillDefinition = Resources.Load<SkillDefinition>(string.Format(skillIndex == 0 ? "Classes/{0}/{1}/{1}Effect" : "Classes/{0}/{1}/{1}", classNames[classIndex].ToString(), skillName));
+                    skillDefinition = Resources.Load<SkillDefinition>(string.Format("Classes/{0}/{1}/{1}", classNames[classIndex].ToString(), skillName));
                     if (skillDefinition == null && skillName != "NotImplementedCombatSkill")
-                        Debug.Log(string.Format("MISSING::CLASS::{0}::{1}", classNames[classIndex].ToString(), skillName));
+                        Debug.Log(string.Format("MISSING::{0}::{1}", classNames[classIndex].ToString(), skillName));
                     SkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].SkillDefinition = skillDefinition ?? notImplemented;
                 }
 
