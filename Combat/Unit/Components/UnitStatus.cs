@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace ArcaneRecursion
@@ -89,7 +90,6 @@ namespace ArcaneRecursion
                     ActiveEffects[i].Duration = -2;
 
             ActiveEffects.RemoveAll(e => e.Duration == -2);
-            _addToPendingEffects = false;
             BatchApplyEffect();
         }
 
@@ -101,8 +101,6 @@ namespace ArcaneRecursion
                     ActiveEffects[i].Duration = -2;
 
             ActiveEffects.RemoveAll(e => e.Duration == -2);
-            RefreshEnhancement();
-            _addToPendingEffects = false;
             BatchApplyEffect();
         }
 
@@ -112,6 +110,17 @@ namespace ArcaneRecursion
             for (int i = 0; i < currentSize; i++)
                 ActiveEffects[i].OnDirectionalAttackReceived(_unitController, ref from);
             return from;
+        }
+
+        public void OnDispell()
+        {
+            _addToPendingEffects = true;
+            for (int i = 0; i < ActiveEffects.Count; i++)
+                if (ActiveEffects[i].OnDispell(_unitController))
+                    ActiveEffects[i].Duration = -2;
+
+            ActiveEffects.RemoveAll(e => e.Duration == -2);
+            BatchApplyEffect();
         }
         #endregion /* OnEffects */
 
@@ -143,6 +152,7 @@ namespace ArcaneRecursion
 
         private void BatchApplyEffect()
         {
+            _addToPendingEffects = false;
             foreach (CombatEffect effect in _pendingEffect)
             {
                 ActiveEffects.Add(effect);

@@ -13,11 +13,12 @@
             Name = SkillLibrary.GetNameFromType(this.GetType());
         }
 
-        public virtual bool OnDispell(UnitController unit) { return false; }
         public virtual void OnDurationEnd(UnitController unit) { }
-        public virtual void OnDirectionalAttackReceived(UnitController unitController, ref BasicOrientation from) { }
+        public virtual bool OnDispell(UnitController unit) { return true; }
+        public virtual bool OnTurnEnd(UnitController unit) { return false; }
         public virtual bool OnSkillLaunched(UnitController unit) { return false; }
         public virtual bool OnAtkLaunched(UnitController unit) { return false; }
+        public virtual void OnDirectionalAttackReceived(UnitController unitController, ref BasicOrientation from) { }
 
         /*
             Move
