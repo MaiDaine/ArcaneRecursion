@@ -132,5 +132,20 @@ namespace ArcaneRecursion
 
             return false;
         }
+
+        public bool OnDamageTaken(ref int amount, DamageTypes damageType = DamageTypes.Magical)
+        {
+            if (damageType != DamageTypes.Arcane)
+                amount = (100 - _unitController.CurrentStats.Defences[(int)damageType]) * amount / 100;
+
+            while (Shields.Count > 0)
+                if (Shields[Shields.Count - 1].OnDamageTaken(ref amount, damageType))
+                    Shields.RemoveAt(Shields.Count - 1);
+
+            if (amount > 0)
+                return OnHPLoss(amount);
+
+            return false;
+        }
     }
 }

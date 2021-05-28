@@ -59,67 +59,77 @@ namespace ArcaneRecursion
         #region UnitTurn Cycle
         public void OnStartTurn()
         {
-            int currentSize = ActiveEffects.Count;
-            for (int i = 0; i < currentSize; i++)
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnTurnStart(_unitController))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
+        }
+
+        public void OnEndTurn()
+        {
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
             {
-                if (ActiveEffects[i].Duration > 0)
+                if (effect.OnTurnEnd(_unitController))
+                    effect.Duration = 0;
+                if (effect.Duration > 0)
                 {
-                    ActiveEffects[i].Duration--;
-                    if (ActiveEffects[i].Duration == 0)
+                    effect.Duration--;
+                    if (effect.Duration == 0)
                     {
-                        ActiveEffects[i].OnDurationEnd(_unitController);
-                        if (ActiveEffects[i] is ShieldCombatEffect)
-                            _unitController.Ressources.RemoveShieldEffect(ActiveEffects[i] as ShieldCombatEffect);
+                        effect.OnDurationEnd(_unitController);
+                        if (effect is ShieldCombatEffect)
+                            _unitController.Ressources.RemoveShieldEffect(effect as ShieldCombatEffect);
                     }
                 }
             }
             ActiveEffects.RemoveAll(e => e.Duration == 0);
-
-            RefreshEnhancement();
+            BatchApplyEffect();
         }
-
-        public void OnEndTurn() { }
         #endregion /* UnitTurn Cycle */
 
         #region OnEffects
         public void OnSkillLaunched()
         {
             _addToPendingEffects = true;
-            for (int i = 0; i < ActiveEffects.Count; i++)
-                if (ActiveEffects[i].OnSkillLaunched(_unitController))
-                    ActiveEffects[i].Duration = -2;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnSkillLaunched(_unitController))
+                    effect.Duration = 0;
 
-            ActiveEffects.RemoveAll(e => e.Duration == -2);
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
             BatchApplyEffect();
         }
 
         public void OnAtkLaunched()
         {
             _addToPendingEffects = true;
-            for (int i = 0; i < ActiveEffects.Count; i++)
-                if (ActiveEffects[i].OnAtkLaunched(_unitController))
-                    ActiveEffects[i].Duration = -2;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnAtkLaunched(_unitController))
+                    effect.Duration = 0;
 
-            ActiveEffects.RemoveAll(e => e.Duration == -2);
+            ActiveEffects.RemoveAll(e => e.Duration == -0);
             BatchApplyEffect();
         }
 
         public BasicOrientation OnDirectionalAttackReceived(BasicOrientation from)
         {
-            int currentSize = ActiveEffects.Count;
-            for (int i = 0; i < currentSize; i++)
-                ActiveEffects[i].OnDirectionalAttackReceived(_unitController, ref from);
+            foreach (CombatEffect effect in ActiveEffects)
+                effect.OnDirectionalAttackReceived(_unitController, ref from);
+
             return from;
         }
 
         public void OnDispell()
         {
             _addToPendingEffects = true;
-            for (int i = 0; i < ActiveEffects.Count; i++)
-                if (ActiveEffects[i].OnDispell(_unitController))
-                    ActiveEffects[i].Duration = -2;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnDispell(_unitController))
+                    effect.Duration = 0;
 
-            ActiveEffects.RemoveAll(e => e.Duration == -2);
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
             BatchApplyEffect();
         }
         #endregion /* OnEffects */

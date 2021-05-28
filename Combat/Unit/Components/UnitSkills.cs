@@ -23,9 +23,12 @@ namespace ArcaneRecursion
         public List<UnitSkill>[] AvailableSkills { get; private set; }
         public UnitSkill SelectedSkill { get; private set; }
 
+        private readonly List<CombatEffect> _trackedEffects;
+
         public UnitSkills(List<SkillData> innateSkills, List<ClassBuild> build, UnitController unit)
         {
             AvailableSkills = new List<UnitSkill>[4] { new List<UnitSkill>(), null, null, null };
+            _trackedEffects = new List<CombatEffect>();
             BuildClassNames = new ClassNames[4] { ClassNames.Innate, ClassNames.Innate, ClassNames.Innate, ClassNames.Innate };
 
             foreach (SkillData e in innateSkills)
@@ -62,8 +65,17 @@ namespace ArcaneRecursion
                 else
                     return;
             }
+
+            _trackedEffects.RemoveAll(e => e.Duration == 0);
         }
 
+        #region TrackedEffect
+        public void AddTrackedEffect(CombatEffect effect) { _trackedEffects.Add(effect); }
+
+        public CombatEffect GetTrackedEffect(string name) { return _trackedEffects.Find(e => e.Name == name); }
+        #endregion /* TrackedEffect */
+
+        #region SkillLaunchCycle
         public bool SelectCombatSkill(int buildCategory, int spellIndex)//TODO UI
         {
             if (AvailableSkills[buildCategory][spellIndex].Cooldown <= 0)
@@ -73,7 +85,6 @@ namespace ArcaneRecursion
             }
             return false;
         }
-
         public void OnSkillLaunched()
         {
             SelectedSkill.Cooldown = SelectedSkill.SkillStats.Cooldown;
@@ -83,5 +94,6 @@ namespace ArcaneRecursion
         {
             SelectedSkill = null;
         }
+        #endregion /* SkillLaunchCycle */
     }
 }

@@ -10,17 +10,24 @@
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
             base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
-            targetTile.TileEntity.GameObject.GetComponent<UnitController>().Status.ApplyEffect(new OvergrowthEffect(_updatedStats.Potency));
+
+            UnitController target = targetTile.TileEntity.GameObject.GetComponent<UnitController>();
+
+            target.Status.ApplyEffect(new OvergrowthEffect(_updatedStats.Potency, caster, target));
         }
     }
 
     public class OvergrowthEffect : CombatEffect
     {
-        public OvergrowthEffect(int potency)
+        public UnitController Target;
+
+        public OvergrowthEffect(int potency, UnitController caster, UnitController target)
         {
             base.SetName();
             Duration = 2;
             Potency = potency;
+            caster.Skills.AddTrackedEffect(this);
+            Target = target;
         }
 
         public void Effect(UnitController unit)

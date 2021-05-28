@@ -77,7 +77,10 @@ namespace ArcaneRecursion
             foreach (KeyValuePair<string, SkillEffectData> e in SkillLibrary.ClassEffectsDatas)
             {
                 string folderName = e.Value.Name.Split(stringSeparators, System.StringSplitOptions.RemoveEmptyEntries)[0];
-                e.Value.EffectDefinition = Resources.Load<SkillDefinition>(string.Format("Classes/{0}/{1}/{2}", classNames[(int)e.Value.Class].ToString(), folderName, e.Value.Name));
+                skillDefinition = Resources.Load<SkillDefinition>(string.Format("Classes/{0}/{1}/{2}", classNames[(int)e.Value.Class].ToString(), folderName, e.Value.Name));
+                if (skillDefinition == null)
+                    Debug.Log(string.Format("MISSING::{0}::{1}", classNames[(int)e.Value.Class].ToString(), e.Value.Name));
+                e.Value.EffectDefinition = skillDefinition ?? notImplemented;
             }
         }
     }

@@ -15,6 +15,7 @@
 
         public virtual void OnDurationEnd(UnitController unit) { }
         public virtual bool OnDispell(UnitController unit) { return true; }
+        public virtual bool OnTurnStart(UnitController unit) { return false; }
         public virtual bool OnTurnEnd(UnitController unit) { return false; }
         public virtual bool OnSkillLaunched(UnitController unit) { return false; }
         public virtual bool OnAtkLaunched(UnitController unit) { return false; }

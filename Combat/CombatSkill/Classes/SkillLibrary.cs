@@ -97,10 +97,10 @@ namespace ArcaneRecursion
                 ClassNames.Druid,
                 new SkillData[6]
                 {
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(Symbiosis)),
                     new SkillData(typeof(Overgrowth)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(Cleansing)),
+                    new SkillData(typeof(LifeLeech)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
@@ -269,8 +269,16 @@ namespace ArcaneRecursion
 
             #region Druid
             {
+                GetNameFromType(typeof(SymbiosisEffectPassiv)),
+                new SkillEffectData(typeof(SymbiosisEffectPassiv), ClassNames.Druid)
+            },
+            {
                 GetNameFromType(typeof(OvergrowthEffect)),
                 new SkillEffectData(typeof(OvergrowthEffect), ClassNames.Druid)
+            },
+            {
+                GetNameFromType(typeof(LifeLeechEffect)),
+                new SkillEffectData(typeof(LifeLeechEffect), ClassNames.Druid)
             },
             #endregion /* Druid */
 
