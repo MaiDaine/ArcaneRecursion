@@ -34,6 +34,13 @@ namespace ArcaneRecursion
                 return;
             }
 
+            List<SkillTag> skillTags = SkillLibrary.ClassEffectsDatas[effect.Name].EffectDefinition.SkillTags;
+            foreach (CombatEffect e in ActiveEffects)
+            {
+                if (!e.OnEffectApply(_unitController, ref effect, skillTags))
+                    return;
+            }
+
             ActiveEffects.Add(effect);
             if (effect is ShieldCombatEffect)
                 _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
@@ -163,8 +170,14 @@ namespace ArcaneRecursion
         private void BatchApplyEffect()
         {
             _addToPendingEffects = false;
-            foreach (CombatEffect effect in _pendingEffect)
+            for (int i = 0; i < _pendingEffect.Count; i++)
             {
+                CombatEffect effect = _pendingEffect[i];
+                List<SkillTag> skillTags = SkillLibrary.ClassEffectsDatas[effect.Name].EffectDefinition.SkillTags;
+                foreach (CombatEffect e in ActiveEffects)
+                    if (!e.OnEffectApply(_unitController, ref effect, skillTags))
+                        return;
+
                 ActiveEffects.Add(effect);
                 if (effect is ShieldCombatEffect)
                     _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);

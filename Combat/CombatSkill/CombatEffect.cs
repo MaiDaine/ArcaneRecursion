@@ -1,4 +1,6 @@
-﻿namespace ArcaneRecursion
+﻿using System.Collections.Generic;
+
+namespace ArcaneRecursion
 {
     public class CombatEffect
     {
@@ -20,15 +22,6 @@
         public virtual bool OnSkillLaunched(UnitController unit) { return false; }
         public virtual bool OnAtkLaunched(UnitController unit) { return false; }
         public virtual void OnDirectionalAttackReceived(UnitController unitController, ref BasicOrientation from) { }
-
-        /*
-            Move
-            Atk
-            OnAtk
-            OnDmg
-            OnDmg TYPE 
-            OnHeal
-            OnShield
-        */
+        public virtual bool OnEffectApply(UnitController unit, ref CombatEffect effect, List<SkillTag> skillTags) { return true; }
     }
 }

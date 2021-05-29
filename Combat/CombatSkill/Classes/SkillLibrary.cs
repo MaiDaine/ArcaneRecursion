@@ -67,7 +67,7 @@ namespace ArcaneRecursion
                 ClassNames.Champion,
                 new SkillData[6]
                 {
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(UnstoppableForce)),
                     new SkillData(typeof(Interception)),
                     new SkillData(typeof(Whirlwind)),
                     new SkillData(typeof(PowerArmor)),
@@ -262,6 +262,10 @@ namespace ArcaneRecursion
 
             #region Champion
             {
+                GetNameFromType(typeof(UnstoppableForceEffectPassiv)),
+                new SkillEffectData(typeof(UnstoppableForceEffectPassiv), ClassNames.Champion)
+            },
+            {
                 GetNameFromType(typeof(PowerArmorEffect)),
                 new SkillEffectData(typeof(PowerArmorEffect), ClassNames.Champion)
             },
@@ -339,7 +343,7 @@ namespace ArcaneRecursion
         public string Name { get; }
         public ClassNames Class;
         public Type Skill;
-        public NodeDefinition EffectDefinition;
+        public SkillDefinition EffectDefinition;
 
         public SkillEffectData(Type skill, ClassNames className)
         {
