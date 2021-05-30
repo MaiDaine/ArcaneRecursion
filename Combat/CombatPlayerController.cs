@@ -11,10 +11,13 @@ namespace ArcaneRecursion
         public bool PlayerTurn { get; set; }
 
         [SerializeField] private RaycastHelper _raycast;
+        [SerializeField] private LiveShapeDrawer _shapeDrawer;
 
         private Tile _currentTile = null;
+        private Tile _targetTile = null;
         private bool _canInteract = false;
         private CombatSkill _loadedSkill = null;
+        private bool _loadedSkillIsProjectile = false;
 
         private void LateUpdate()
         {
@@ -26,14 +29,22 @@ namespace ArcaneRecursion
 
         private void UpdateCursorPosition()
         {
-            _raycast.GetEntityFromCursor(out UnitController unit, out Tile tile);
-            if (tile != _currentTile)
+            _raycast.GetEntityFromCursor(out UnitController unit, out _targetTile);
+            if (_targetTile != _currentTile)
             {
                 if (_currentUnit.Skills.SelectedSkill != null)
-                    _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, tile);
+                {
+                    if (_loadedSkillIsProjectile && _targetTile != null)
+                    {
+                        _raycast.UpdateProjectilePrediction(_currentUnit, out unit, _targetTile);
+                        if (unit != null)
+                            _targetTile = unit.CurrentTile;
+                    }
+                    _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _targetTile);
+                }
                 else
-                    _cursor.UpdateMoveCursor(_currentUnit, _currentTile, tile);
-                _currentTile = tile;
+                    _cursor.UpdateMoveCursor(_currentUnit, _currentTile, _targetTile);
+                _currentTile = _targetTile;
             }
 
             if (unit != null && unit != _currentUnit)
@@ -96,6 +107,13 @@ namespace ArcaneRecursion
             }
             _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
             _loadedSkill.TilesAffected = tilesAffected.ToList();
+            if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Projectile))
+            {
+                _shapeDrawer.SetShapeDrawState(true);
+                _loadedSkillIsProjectile = true;
+            }
+            else
+                _loadedSkillIsProjectile = false;
             _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _currentUnit.CurrentTile);
         }
 
@@ -107,18 +125,20 @@ namespace ArcaneRecursion
             {
                 if (_currentUnit.Skills.SelectedSkill != null)
                 {
-                    Tile targetTile = _raycast.GetTileFromCursor();
-                    if (targetTile != null && _cursor.AvailableTiles != null
-                        && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, targetTile))
+                    //Tile targetTile = _raycast.GetTileFromCursor();
+                    UpdateCursorPosition();
+                    if (_targetTile != null && _cursor.AvailableTiles != null
+                        && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _targetTile))
                     {
-                        if (targetTile != _currentUnit.CurrentTile)
-                            _currentUnit.Movement.SetOrientation(targetTile);
+                        if (_targetTile != _currentUnit.CurrentTile)
+                            _currentUnit.Movement.SetOrientation(_targetTile);
 
-                        _loadedSkill.OnSkillLaunched(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _cursor, targetTile);
+                        _loadedSkill.OnSkillLaunched(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _cursor, _targetTile);
                         if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Atk))
                             _currentUnit.Status.OnAtkLaunched();
                         else
                             _currentUnit.Status.OnSkillLaunched();
+                        _shapeDrawer.SetShapeDrawState(false);
                         CombatUIController.Instance.CurrentUnitRessourcesPanelController.SetTargetUnit(_currentUnit);
                         CancelAction();
                         UpdateCursorPosition();
