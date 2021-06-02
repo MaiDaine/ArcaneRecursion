@@ -173,7 +173,7 @@ namespace ArcaneRecursion
                 new SkillData[6]
                 {
                     new SkillData(typeof(NotImplementedCombatSkill)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(ManaSurge)),
                     new SkillData(typeof(ChargedBolt)),
                     new SkillData(typeof(ManaDownburst)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
