@@ -7,7 +7,9 @@ namespace ArcaneRecursion
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
             base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
-            targetTile?.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnDamageTaken(skillDefinition.SkillStats.Potency, DamageTypes.Wind);
+            int damage = skillDefinition.SkillStats.Potency * (100 + (caster.CurrentTile.Coordinates.DistanceTo(targetTile.Coordinates) * 5)) / 100;
+
+            targetTile?.TileEntity.GameObject.GetComponent<UnitController>().Ressources.OnDamageTaken(damage, DamageTypes.Wind);
         }
     }
 }
