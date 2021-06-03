@@ -18,7 +18,7 @@ namespace ArcaneRecursion
         public void Init(CombatUnit unit, CombatEntity entity, Tile tile)
         {
             CombatEntity = entity;
-            Movement.Init(tile, entity);
+            Movement.Init(tile, entity, this);
             Ressources.LoadStats(entity.UnitStats);
             Skills = new UnitSkills(SkillLibrary.GenerateInnateSkills(unit.InnateSkills), unit.Build, this);
         }

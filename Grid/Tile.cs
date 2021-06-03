@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace ArcaneRecursion
 {
     public class Tile : MonoBehaviour
     {
         public HexCoordinates Coordinates { get; private set; }
+        public List<CombatEffect> OnTileMovementEffects { get; private set; }
+        public TileSearchData SearchData { get; private set; }//TODO Isolate neighbors after init
         public TileState State { get; private set; }
         public TileTmpState TmpState { get; private set; } = TileTmpState.None;
-        public TileSearchData SearchData { get; private set; }
-        public CombatEntity TileEntity { get; set; } = null;
+        public CombatEntity TileEntity { get; set; }
 
         [SerializeField] private MeshRenderer tileRenderer;
 
@@ -18,8 +20,10 @@ namespace ArcaneRecursion
             text.text = coordinates.ToStringOnSeparateLines();
             SearchData = new TileSearchData(this);
             SetTileState(state);
+            OnTileMovementEffects = new List<CombatEffect>();
         }
 
+        #region TileState
         public void SetTileState(TileState state)
         {
             State = state;
@@ -69,6 +73,21 @@ namespace ArcaneRecursion
                     tileRenderer.material = CombatLibrary.Instance.TileMaterials[(int)TileMaterial.Default];
                     break;
             }
+        }
+        #endregion /* TileState */
+
+        public void OnUnitEnterTile(UnitController unit, bool teleport)
+        {
+            if (OnTileMovementEffects.Count > 0)
+                foreach (CombatEffect effect in OnTileMovementEffects)
+                    effect.OnUnitEnterTile(unit, this);
+        }
+
+        public void OnUnitExitTile(UnitController unit, bool teleport)
+        {
+            if (OnTileMovementEffects.Count > 0)
+                foreach (CombatEffect effect in OnTileMovementEffects)
+                    effect.OnUnitExitTile(unit, this);
         }
 
         #region DEBUG

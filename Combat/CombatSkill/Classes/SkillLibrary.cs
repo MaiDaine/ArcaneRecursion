@@ -172,7 +172,7 @@ namespace ArcaneRecursion
                 ClassNames.Shaman,
                 new SkillData[6]
                 {
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(ManaTide)),
                     new SkillData(typeof(ManaSurge)),
                     new SkillData(typeof(ChargedBolt)),
                     new SkillData(typeof(ManaDownburst)),
@@ -285,6 +285,17 @@ namespace ArcaneRecursion
                 new SkillEffectData(typeof(LifeLeechEffect), ClassNames.Druid)
             },
             #endregion /* Druid */
+
+            #region Shaman
+            {
+                GetNameFromType(typeof(ManaTideEffectPassiv)),
+                new SkillEffectData(typeof(ManaTideEffectPassiv), ClassNames.Shaman)
+            },
+            {
+                GetNameFromType(typeof(ManaTideEffect)),
+                new SkillEffectData(typeof(ManaTideEffect), ClassNames.Shaman)
+            },
+            #endregion /* Shaman */
 
             #region Sorcerer
             {

@@ -139,6 +139,17 @@ namespace ArcaneRecursion
             ActiveEffects.RemoveAll(e => e.Duration == 0);
             BatchApplyEffect();
         }
+
+        public void OnEnterTile(Tile tile)
+        {
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnUnitEnterTile(_unitController, tile))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
+        }
         #endregion /* OnEffects */
 
         private void RefreshEnhancement()//TODO APPLY AS UNARY ? //TODO CONTROL REFRESH
@@ -167,7 +178,7 @@ namespace ArcaneRecursion
             }
         }
 
-        private void BatchApplyEffect()
+        private void BatchApplyEffect()//TODO REFRESH TARGET ?
         {
             _addToPendingEffects = false;
             for (int i = 0; i < _pendingEffect.Count; i++)

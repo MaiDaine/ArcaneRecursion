@@ -10,6 +10,7 @@ namespace ArcaneRecursion
 
         private const int MOVEANIMATIONSPEED = 10;
 
+        private UnitController _controller;
         private UnitAnimation _animator;
         private CombatEntity _entity;
         private Action _callback;
@@ -18,9 +19,10 @@ namespace ArcaneRecursion
         private float _moveDelta;
 
         #region Init
-        public void Init(Tile currentTile, CombatEntity entity)
+        public void Init(Tile currentTile, CombatEntity entity, UnitController controller)
         {
             CurrentTile = currentTile;
+            _controller = controller;
             _entity = entity;
 
             gameObject.transform.position = currentTile.transform.position;
@@ -47,9 +49,12 @@ namespace ArcaneRecursion
         //TODO Animation
         public void Teleport(Tile destination)
         {
+            CurrentTile.OnUnitExitTile(_controller, true);
             CurrentTile.TileEntity = null;
             CurrentTile.SetTileState(TileState.Empty);
             CurrentTile = destination;
+            _controller.Status.OnEnterTile(destination);
+            CurrentTile.OnUnitEnterTile(_controller, true);
             destination.TileEntity = _entity;
             transform.position = destination.transform.position;
         }
@@ -67,6 +72,7 @@ namespace ArcaneRecursion
                 if (Vector3.Distance(transform.position, _path[_currentPathIndex].transform.position) < 0.1f)
                 {
                     _moveDelta = 0f;
+                    CurrentTile.OnUnitExitTile(_controller, false);
                     CurrentTile.SetTileState(TileState.Empty);
                     CurrentTile.TileEntity = null;
 
@@ -74,6 +80,8 @@ namespace ArcaneRecursion
                     CurrentTile = _path[_currentPathIndex];
                     CurrentTile.SetTileState(TileState.Occupied);
                     CurrentTile.TileEntity = _entity;
+                    _controller.Status.OnEnterTile(CurrentTile);
+                    CurrentTile.OnUnitEnterTile(_controller, true);
 
                     _currentPathIndex++;
                     if (_currentPathIndex == _path.Length)
