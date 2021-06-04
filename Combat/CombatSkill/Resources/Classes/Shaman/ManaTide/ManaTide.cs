@@ -6,15 +6,15 @@ namespace ArcaneRecursion
     {
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            caster.Status.ApplyEffect(new ManaTideEffectPassiv(skillDefinition.SkillStats.Potency));
+            caster.Status.ApplyEffect(new ManaTideEffectPassive(skillDefinition.SkillStats.Potency));
         }
     }
 
-    public class ManaTideEffectPassiv : CombatEffect
+    public class ManaTideEffectPassive : CombatEffect
     {
         private bool _active = false;
 
-        public ManaTideEffectPassiv(int potency)
+        public ManaTideEffectPassive(int potency)
         {
             base.SetName();
             Potency = potency;

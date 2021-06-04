@@ -217,7 +217,7 @@ namespace ArcaneRecursion
                 ClassNames.Warden,
                 new SkillData[6]
                 {
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(FluxControl)),
                     new SkillData(typeof(Intervention)),
                     new SkillData(typeof(ArmorOverload)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
@@ -247,8 +247,8 @@ namespace ArcaneRecursion
         {
             #region Augmenter
             {
-                GetNameFromType(typeof(ChargedBladeEffectPassiv)),
-                new SkillEffectData(typeof(ChargedBladeEffectPassiv), ClassNames.Augmenter)
+                GetNameFromType(typeof(ChargedBladeEffectPassive)),
+                new SkillEffectData(typeof(ChargedBladeEffectPassive), ClassNames.Augmenter)
             },
             {
                 GetNameFromType(typeof(ChargedBladeEffect)),
@@ -262,8 +262,8 @@ namespace ArcaneRecursion
 
             #region Champion
             {
-                GetNameFromType(typeof(UnstoppableForceEffectPassiv)),
-                new SkillEffectData(typeof(UnstoppableForceEffectPassiv), ClassNames.Champion)
+                GetNameFromType(typeof(UnstoppableForceEffectPassive)),
+                new SkillEffectData(typeof(UnstoppableForceEffectPassive), ClassNames.Champion)
             },
             {
                 GetNameFromType(typeof(PowerArmorEffect)),
@@ -273,8 +273,8 @@ namespace ArcaneRecursion
 
             #region Druid
             {
-                GetNameFromType(typeof(SymbiosisEffectPassiv)),
-                new SkillEffectData(typeof(SymbiosisEffectPassiv), ClassNames.Druid)
+                GetNameFromType(typeof(SymbiosisEffectPassive)),
+                new SkillEffectData(typeof(SymbiosisEffectPassive), ClassNames.Druid)
             },
             {
                 GetNameFromType(typeof(OvergrowthEffect)),
@@ -288,8 +288,8 @@ namespace ArcaneRecursion
 
             #region Shaman
             {
-                GetNameFromType(typeof(ManaTideEffectPassiv)),
-                new SkillEffectData(typeof(ManaTideEffectPassiv), ClassNames.Shaman)
+                GetNameFromType(typeof(ManaTideEffectPassive)),
+                new SkillEffectData(typeof(ManaTideEffectPassive), ClassNames.Shaman)
             },
             {
                 GetNameFromType(typeof(ManaTideEffect)),
@@ -299,8 +299,8 @@ namespace ArcaneRecursion
 
             #region Sorcerer
             {
-                GetNameFromType(typeof(ArcaneFlowEffectPassiv)),
-                new SkillEffectData(typeof(ArcaneFlowEffectPassiv), ClassNames.Sorcerer)
+                GetNameFromType(typeof(ArcaneFlowEffectPassive)),
+                new SkillEffectData(typeof(ArcaneFlowEffectPassive), ClassNames.Sorcerer)
             },
             {
                 GetNameFromType(typeof(ArcaneFlowEffect)),
@@ -309,6 +309,10 @@ namespace ArcaneRecursion
             #endregion /* Sorcerer */
 
             #region Warden
+            {
+                GetNameFromType(typeof(FluxControlEffectPassive)),
+                new SkillEffectData(typeof(FluxControlEffectPassive), ClassNames.Warden)
+            },
             {
                 GetNameFromType(typeof(InterventionEffect)),
                 new SkillEffectData(typeof(InterventionEffect), ClassNames.Warden)

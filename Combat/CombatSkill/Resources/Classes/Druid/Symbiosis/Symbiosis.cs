@@ -8,13 +8,13 @@ namespace ArcaneRecursion
     {
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            caster.Status.ApplyEffect(new SymbiosisEffectPassiv(skillDefinition.SkillStats.Potency));
+            caster.Status.ApplyEffect(new SymbiosisEffectPassive(skillDefinition.SkillStats.Potency));
         }
     }
 
-    public class SymbiosisEffectPassiv : CombatEffect
+    public class SymbiosisEffectPassive : CombatEffect
     {
-        public SymbiosisEffectPassiv(int potency)
+        public SymbiosisEffectPassive(int potency)
         {
             base.SetName();
             Duration = PASSIVEFFECT;

@@ -98,6 +98,7 @@ namespace ArcaneRecursion
         }
         #endregion /* UnitTurn Cycle */
 
+        //TODO FACTORISE EFFECTS
         #region OnEffects
         public void OnSkillLaunched()
         {
@@ -129,6 +130,17 @@ namespace ArcaneRecursion
             return from;
         }
 
+        public void OnEnterTile(Tile tile)
+        {
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnUnitEnterTile(_unitController, tile))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
+        }
+
         public void OnDispell()
         {
             _addToPendingEffects = true;
@@ -140,15 +152,10 @@ namespace ArcaneRecursion
             BatchApplyEffect();
         }
 
-        public void OnEnterTile(Tile tile)
+        public void OnUnitDeath()
         {
-            _addToPendingEffects = true;
             foreach (CombatEffect effect in ActiveEffects)
-                if (effect.OnUnitEnterTile(_unitController, tile))
-                    effect.Duration = 0;
-
-            ActiveEffects.RemoveAll(e => e.Duration == 0);
-            BatchApplyEffect();
+                effect.OnUnitDeath(_unitController);
         }
         #endregion /* OnEffects */
 

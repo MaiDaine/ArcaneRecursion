@@ -8,13 +8,13 @@ namespace ArcaneRecursion
     {
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            caster.Status.ApplyEffect(new ChargedBladeEffectPassiv(skillDefinition.SkillStats.Potency));
+            caster.Status.ApplyEffect(new ChargedBladeEffectPassive(skillDefinition.SkillStats.Potency));
         }
     }
 
-    public class ChargedBladeEffectPassiv : CombatEffect
+    public class ChargedBladeEffectPassive : CombatEffect
     {
-        public ChargedBladeEffectPassiv(int potency)
+        public ChargedBladeEffectPassive(int potency)
         {
             base.SetName();
             Potency = potency;

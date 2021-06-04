@@ -11,6 +11,7 @@ namespace ArcaneRecursion
         public TileState State { get; private set; }
         public TileTmpState TmpState { get; private set; } = TileTmpState.None;
         public CombatEntity TileEntity { get; set; }
+        public int MoveCostPercent { get; set; }
 
         [SerializeField] private MeshRenderer tileRenderer;
 
@@ -21,6 +22,7 @@ namespace ArcaneRecursion
             SearchData = new TileSearchData(this);
             SetTileState(state);
             OnTileMovementEffects = new List<CombatEffect>();
+            MoveCostPercent = 100;
         }
 
         #region TileState

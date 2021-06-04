@@ -8,13 +8,13 @@ namespace ArcaneRecursion
     {
         public override void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            caster.Status.ApplyEffect(new UnstoppableForceEffectPassiv());
+            caster.Status.ApplyEffect(new UnstoppableForceEffectPassive());
         }
     }
 
-    public class UnstoppableForceEffectPassiv : CombatEffect
+    public class UnstoppableForceEffectPassive : CombatEffect
     {
-        public UnstoppableForceEffectPassiv()
+        public UnstoppableForceEffectPassive()
         {
             base.SetName();
             Duration = PASSIVEFFECT;

@@ -17,6 +17,7 @@ namespace ArcaneRecursion
 
         public virtual bool OnTurnStart(UnitController unit) { return false; }
         public virtual bool OnTurnEnd(UnitController unit) { return false; }
+        public virtual void OnUnitDeath(UnitController unit) { }
         public virtual void OnDurationEnd(UnitController unit) { }
         public virtual bool OnDispell(UnitController unit) { return true; }
         public virtual bool OnSkillLaunched(UnitController unit) { return false; }

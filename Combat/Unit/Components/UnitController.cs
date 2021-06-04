@@ -39,17 +39,17 @@ namespace ArcaneRecursion
         }
         #endregion /* UnitTurn Cycle */
 
-        public bool CanMoveTo(Tile[] path) { return CurrentStats.ActionPoints >= CalculateMoveCost(path.Length); }
+        public bool CanMoveTo(Tile[] path) { return CurrentStats.ActionPoints >= CalculateMoveCost(path); }
 
         public bool CanMoveTo(Tile[] path, ref int moveCost)
         {
-            moveCost = CalculateMoveCost(path.Length);
+            moveCost = CalculateMoveCost(path);
             return Ressources.UnitStats.ActionPoints >= moveCost;
         }
 
         public string Move(Action callback, Tile[] path)
         {
-            int moveCost = CalculateMoveCost(path.Length);
+            int moveCost = CalculateMoveCost(path);
 
             if (CanMoveTo(path, ref moveCost))
             {
@@ -83,6 +83,7 @@ namespace ArcaneRecursion
         public void OnDeath()
         {
             Debug.Log("TODO UNIT DEATH"); //TODO 
+            Status.OnUnitDeath();
             CombatTurnController.Instance.RemoveUnit(CombatEntity);
         }
 
@@ -95,9 +96,12 @@ namespace ArcaneRecursion
         }
         #endregion /* MonoBehavior LifeCycle */
 
-        private int CalculateMoveCost(int pathLength)
+        private int CalculateMoveCost(Tile[] path)
         {
-            return pathLength * CurrentStats.MovementSpeed;//TODO MOVESPEED
+            int moveCost = 0;
+            for (int i = 0; i < path.Length; i++)
+                moveCost += CurrentStats.MovementSpeed * path[i].MoveCostPercent / 100;
+            return moveCost;
         }
     }
 }
