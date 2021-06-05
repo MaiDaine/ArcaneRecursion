@@ -22,7 +22,7 @@ namespace ArcaneRecursion
             Potency = potency;
         }
 
-        public override bool OnAtkLaunched(UnitController unit)
+        public override bool OnAtkLaunched(UnitController unit, Tile targetTile)
         {
             stack--;
             return stack == 0;

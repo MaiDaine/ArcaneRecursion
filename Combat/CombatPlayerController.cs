@@ -135,7 +135,7 @@ namespace ArcaneRecursion
 
                         _loadedSkill.OnSkillLaunched(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _cursor, _targetTile);
                         if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Atk))
-                            _currentUnit.Status.OnAtkLaunched();
+                            _currentUnit.Status.OnAtkLaunched(_targetTile);
                         else
                             _currentUnit.Status.OnSkillLaunched();
                         _shapeDrawer.SetShapeDrawState(false);

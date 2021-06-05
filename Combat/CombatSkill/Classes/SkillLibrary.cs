@@ -220,7 +220,7 @@ namespace ArcaneRecursion
                     new SkillData(typeof(FluxControl)),
                     new SkillData(typeof(Intervention)),
                     new SkillData(typeof(ArmorOverload)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(ManaBinding)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                 }
@@ -320,6 +320,18 @@ namespace ArcaneRecursion
             {
                 GetNameFromType(typeof(ArmorOverloadEffect)),
                 new SkillEffectData(typeof(ArmorOverloadEffect), ClassNames.Warden)
+            },
+            {
+                GetNameFromType(typeof(ManaBindingEffect)),
+                new SkillEffectData(typeof(ManaBindingEffect), ClassNames.Warden)
+            },
+            {
+                GetNameFromType(typeof(ManaBindingEffectRoot)),
+                new SkillEffectData(typeof(ManaBindingEffectRoot), ClassNames.Warden)
+            },
+            {
+                GetNameFromType(typeof(ManaBindingEffectCripple)),
+                new SkillEffectData(typeof(ManaBindingEffectCripple), ClassNames.Warden)
             }
             #endregion /* Warden */
         };

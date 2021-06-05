@@ -87,6 +87,9 @@ namespace ArcaneRecursion
 
         public void OnHPGain(int amount)
         {
+            if (_unitController.Status.StatusSummary.IsCripple)
+                amount /= 2;
+
             UnitStats.HealthPoints += amount;
             if (UnitStats.HealthPoints > UnitStatsMax.HealthPoints)
                 UnitStatsMax.HealthPoints = UnitStats.HealthPoints;

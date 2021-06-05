@@ -43,7 +43,7 @@ namespace ArcaneRecursion
             Duration = 1;
         }
 
-        public override bool OnAtkLaunched(UnitController unit)
+        public override bool OnAtkLaunched(UnitController unit, Tile targetTile)
         {
             return true;
         }

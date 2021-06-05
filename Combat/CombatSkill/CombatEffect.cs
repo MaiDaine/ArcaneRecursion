@@ -21,7 +21,7 @@ namespace ArcaneRecursion
         public virtual void OnDurationEnd(UnitController unit) { }
         public virtual bool OnDispell(UnitController unit) { return true; }
         public virtual bool OnSkillLaunched(UnitController unit) { return false; }
-        public virtual bool OnAtkLaunched(UnitController unit) { return false; }
+        public virtual bool OnAtkLaunched(UnitController unit, Tile targetTile) { return false; }
         public virtual void OnDirectionalAttackReceived(UnitController unitController, ref BasicOrientation from) { }
         public virtual bool OnEffectApply(UnitController unit, ref CombatEffect effect, List<SkillTag> skillTags) { return true; }
         public virtual bool OnUnitEnterTile(UnitController unit, Tile tile) { return false; }

@@ -8,7 +8,7 @@ namespace ArcaneRecursion
     {
         public List<CombatEffect> ActiveEffects { get; private set; }
         public DefModifier DefModifier;
-        public UnitStatusSummary StatusSummary;
+        public UnitStatusEffect StatusSummary;
 
         private readonly UnitController _unitController;
         private SkillModifier _skillModifier;
@@ -20,7 +20,7 @@ namespace ArcaneRecursion
         public UnitStatus(UnitController controller)
         {
             ActiveEffects = new List<CombatEffect>();
-            StatusSummary = new UnitStatusSummary { IsRoot = false };
+            StatusSummary = new UnitStatusEffect { IsRoot = false };
             _unitController = controller;
             _pendingEffect = new List<CombatEffect>();
         }
@@ -44,7 +44,7 @@ namespace ArcaneRecursion
             ActiveEffects.Add(effect);
             if (effect is ShieldCombatEffect)
                 _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
-            if (effect is ISkillEnhancement || effect is IDefEnhancement)
+            if (effect is ISkillEnhancement || effect is IDefEnhancement || effect is IUnitStatus)
                 RefreshEnhancement();
         }
 
@@ -111,11 +111,11 @@ namespace ArcaneRecursion
             BatchApplyEffect();
         }
 
-        public void OnAtkLaunched()
+        public void OnAtkLaunched(Tile targetTile)
         {
             _addToPendingEffects = true;
             foreach (CombatEffect effect in ActiveEffects)
-                if (effect.OnAtkLaunched(_unitController))
+                if (effect.OnAtkLaunched(_unitController, targetTile))
                     effect.Duration = 0;
 
             ActiveEffects.RemoveAll(e => e.Duration == -0);
@@ -162,6 +162,7 @@ namespace ArcaneRecursion
         private void RefreshEnhancement()//TODO APPLY AS UNARY ? //TODO CONTROL REFRESH
         {
             DefModifier.Reset();
+            StatusSummary.Reset();
             _skillModifier.Reset();
             _atkModifier.Reset();
 
@@ -175,6 +176,9 @@ namespace ArcaneRecursion
 
                 IDefEnhancement defEnhancement = e as IDefEnhancement;
                 defEnhancement?.ApplyEnhancement(ref DefModifier);
+
+                IUnitStatus unitStatus = e as IUnitStatus;
+                unitStatus?.ApplyStatus(ref StatusSummary);
             }
 
             StatusModifierVariable modifier;

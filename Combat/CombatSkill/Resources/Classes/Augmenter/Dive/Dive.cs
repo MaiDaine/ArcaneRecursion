@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ArcaneRecursion
@@ -28,13 +26,17 @@ namespace ArcaneRecursion
         }
     }
 
-    public class DiveEffect : CombatEffect
+    public class DiveEffect : CombatEffect, IUnitStatus
     {
         public DiveEffect()
         {
             base.SetName();
             Duration = 1;
-            //TODO ROOT
+        }
+
+        public void ApplyStatus(ref UnitStatusEffect statusEffect)
+        {
+            statusEffect.IsRoot = true;
         }
     }
 }
