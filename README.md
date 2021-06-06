@@ -4,13 +4,13 @@ Turn based RPG (WIP)
 
 ### TodoList
 
-1. Minimum skill list to test 3V3 (current progress: 80%)
-
-   6 Classes with passive + 3 skills each in order to test interaction between systems and iterate on AI
-   
-2. AI improvement: custom brain
+1. AI improvement: custom brain
 
    Specialise profile for ai based on current class and assigned position in team
+
+2. Map neutral entities and events
+
+   Add obstacles and special tiles on map
 
 3. Complete skill list for current classes
 
