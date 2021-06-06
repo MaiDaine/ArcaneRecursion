@@ -19,40 +19,7 @@ namespace ArcaneRecursion
         private CombatSkill _loadedSkill = null;
         private bool _loadedSkillIsProjectile = false;
 
-        private void LateUpdate()
-        {
-            if (_canInteract)
-                UpdateCursorPosition();
-        }
-
-        private void UnlockInteraction() { _canInteract = true; }
-
-        private void UpdateCursorPosition()
-        {
-            _raycast.GetEntityFromCursor(out UnitController unit, out _targetTile);
-            if (_targetTile != _currentTile)
-            {
-                if (_currentUnit.Skills.SelectedSkill != null)
-                {
-                    if (_loadedSkillIsProjectile && _targetTile != null)
-                    {
-                        _raycast.UpdateProjectilePrediction(_currentUnit, out unit, _targetTile);
-                        if (unit != null)
-                            _targetTile = unit.CurrentTile;
-                    }
-                    _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _targetTile);
-                }
-                else
-                    _cursor.UpdateMoveCursor(_currentUnit, _currentTile, _targetTile);
-                _currentTile = _targetTile;
-            }
-
-            if (unit != null && unit != _currentUnit)
-                CombatUIController.Instance.TargetUnitRessourcesPanelController.SetTargetUnit(unit);
-            else
-                CombatUIController.Instance.TargetUnitRessourcesPanelController.ClearPannel();
-        }
-
+        #region Turn Cycle
         public override void UnitTurn(CombatEntity unit)
         {
             base.UnitTurn(unit);
@@ -66,64 +33,21 @@ namespace ArcaneRecursion
             _canInteract = false;
             base.UnitActionEnd();
         }
+        #endregion /* Turn Cycle */
 
         public void SkillLoaded()
         {
             if (_loadedSkill != null)
                 CancelAction(false);
-            //TODO Update spell req with unit status
+
             if (!_currentUnit.Ressources.CheckSkillRessourceRequirement(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition))
             {
                 Debug.Log("Missing ressources");
-                _currentUnit.Skills.ClearSelectedSkill();
+                CancelAction(true);
                 return;
             }
 
-            HashSet<Tile> tilesAffected = new HashSet<Tile>();
-            List<Tile> tiles = new List<Tile>();
-            List<Tile> tmpList = new List<Tile>();
-            tiles.Add(_currentUnit.CurrentTile);
-
-            for (int indexRange = 0; indexRange < _currentUnit.Skills.SelectedSkill.SkillStats.CastRange; indexRange++)
-            {
-                for (int currentTileIndex = 0; currentTileIndex < tiles.Count; currentTileIndex++)
-                {
-                    Tile tile = tiles[currentTileIndex];
-                    for (int i = 0; i < 6; i++)
-                    {
-                        Tile tmp = tile.SearchData.Neighbors[i];
-
-                        if (tmp != null)
-                            tmpList.Add(tmp);
-                    }
-                }
-                tiles.Clear();
-                foreach (Tile t in tmpList)
-                    if (tilesAffected.Add(t))
-                        tiles.Add(t);
-                tmpList.Clear();
-            }
-            HexCoordinates from = _currentUnit.CurrentTile.Coordinates;
-            int minRange = _currentUnit.Skills.SelectedSkill.SkillStats.MinCastRange;
-            _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
-            _loadedSkill.TilesAffected = tilesAffected.ToList();
-            _loadedSkill.TilesAffected.RemoveAll(e =>
-            {
-                if (from.DistanceTo(e.Coordinates) > minRange)
-                {
-                    e.SetTileTmpState(TileTmpState.SkillRange);
-                    return false;
-                }
-                return true;
-            });
-            if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Projectile))
-            {
-                _shapeDrawer.SetShapeDrawState(true);
-                _loadedSkillIsProjectile = true;
-            }
-            else
-                _loadedSkillIsProjectile = false;
-            _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _currentUnit.CurrentTile);
+            InitSkill();
         }
 
         public void SelectionClick(InputAction.CallbackContext context)
@@ -134,7 +58,6 @@ namespace ArcaneRecursion
             {
                 if (_currentUnit.Skills.SelectedSkill != null)
                 {
-                    //Tile targetTile = _raycast.GetTileFromCursor();
                     UpdateCursorPosition();
                     if (_targetTile != null && _cursor.AvailableTiles != null && _cursor.IsValid
                         && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _targetTile))
@@ -183,6 +106,90 @@ namespace ArcaneRecursion
                 if (clearSkill)
                     _currentUnit.Skills.ClearSelectedSkill();
             }
+        }
+
+        private void LateUpdate()
+        {
+            if (_canInteract)
+                UpdateCursorPosition();
+        }
+
+        private void UnlockInteraction() { _canInteract = true; }
+
+        private void UpdateCursorPosition()
+        {
+            _raycast.GetEntityFromCursor(out UnitController unit, out _targetTile);
+            if (_targetTile != _currentTile)
+            {
+                if (_currentUnit.Skills.SelectedSkill != null)
+                {
+                    if (_loadedSkillIsProjectile && _targetTile != null)
+                    {
+                        _raycast.UpdateProjectilePrediction(_currentUnit, out unit, _targetTile);
+                        if (unit != null)
+                            _targetTile = unit.CurrentTile;
+                    }
+                    _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _targetTile);
+                }
+                else
+                    _cursor.UpdateMoveCursor(_currentUnit, _currentTile, _targetTile);
+                _currentTile = _targetTile;
+            }
+
+            if (unit != null && unit != _currentUnit)
+                CombatUIController.Instance.TargetUnitRessourcesPanelController.SetTargetUnit(unit);
+            else
+                CombatUIController.Instance.TargetUnitRessourcesPanelController.ClearPannel();
+        }
+
+        private void InitSkill()
+        {
+            HashSet<Tile> tilesAffected = new HashSet<Tile>();
+            List<Tile> tiles = new List<Tile>();
+            List<Tile> tmpList = new List<Tile>();
+            tiles.Add(_currentUnit.CurrentTile);
+
+            for (int indexRange = 0; indexRange < _currentUnit.Skills.SelectedSkill.SkillStats.CastRange; indexRange++)
+            {
+                for (int currentTileIndex = 0; currentTileIndex < tiles.Count; currentTileIndex++)
+                {
+                    Tile tile = tiles[currentTileIndex];
+                    for (int i = 0; i < 6; i++)
+                    {
+                        Tile tmp = tile.SearchData.Neighbors[i];
+
+                        if (tmp != null)
+                            tmpList.Add(tmp);
+                    }
+                }
+                tiles.Clear();
+                foreach (Tile t in tmpList)
+                    if (tilesAffected.Add(t))
+                        tiles.Add(t);
+                tmpList.Clear();
+            }
+
+            HexCoordinates from = _currentUnit.CurrentTile.Coordinates;
+            int minRange = _currentUnit.Skills.SelectedSkill.SkillStats.MinCastRange;
+            _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
+            _loadedSkill.TilesAffected = tilesAffected.ToList();
+            _loadedSkill.TilesAffected.RemoveAll(e =>
+            {
+                if (from.DistanceTo(e.Coordinates) > minRange)
+                {
+                    e.SetTileTmpState(TileTmpState.SkillRange);
+                    return false;
+                }
+                return true;
+            });
+            if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Projectile))
+            {
+                _shapeDrawer.SetShapeDrawState(true);
+                _loadedSkillIsProjectile = true;
+            }
+            else
+                _loadedSkillIsProjectile = false;
+            _cursor.UpdateSkillCursor(_loadedSkill, _currentUnit.Skills.SelectedSkill.SkillData, _currentUnit, _currentUnit.CurrentTile);
         }
     }
 }

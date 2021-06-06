@@ -6,11 +6,12 @@ namespace ArcaneRecursion
     public class Tile : MonoBehaviour
     {
         public HexCoordinates Coordinates { get; private set; }
-        public List<CombatEffect> OnTileMovementEffects { get; private set; }
-        public TileSearchData SearchData { get; private set; }//TODO Isolate neighbors after init
+        public TileSearchData SearchData { get; private set; }
         public TileState State { get; private set; }
         public TileTmpState TmpState { get; private set; } = TileTmpState.None;
         public CombatEntity TileEntity { get; set; }
+
+        public List<CombatEffect> OnTileMovementEffects { get; private set; }
         public int MoveCostPercent { get; set; }
 
         [SerializeField] private MeshRenderer tileRenderer;
@@ -18,11 +19,12 @@ namespace ArcaneRecursion
         public void Init(HexCoordinates coordinates, TileState state = TileState.Empty)
         {
             Coordinates = coordinates;
-            text.text = coordinates.ToStringOnSeparateLines();
             SearchData = new TileSearchData(this);
             SetTileState(state);
             OnTileMovementEffects = new List<CombatEffect>();
             MoveCostPercent = 100;
+
+            text.text = coordinates.ToStringOnSeparateLines();
         }
 
         #region TileState
@@ -105,6 +107,5 @@ namespace ArcaneRecursion
             text.text = s;
         }
         #endregion /* DEBUG */
-
     }
 }

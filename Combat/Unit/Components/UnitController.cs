@@ -82,7 +82,7 @@ namespace ArcaneRecursion
 
         public void OnDeath()
         {
-            Debug.Log("TODO UNIT DEATH"); //TODO 
+            Debug.Log("TODO UNIT DEATH"); //TODO Animation
             Status.OnUnitDeath();
             CombatTurnController.Instance.RemoveUnit(CombatEntity);
         }

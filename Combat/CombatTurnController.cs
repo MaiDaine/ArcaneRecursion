@@ -34,7 +34,6 @@ namespace ArcaneRecursion
             return activeTeam.Count == 1;
         }
 
-
         public void InitCombat(List<ICombatTurnEntity> entities)
         {
             Entities = entities;

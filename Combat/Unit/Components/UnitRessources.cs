@@ -30,14 +30,9 @@ namespace ArcaneRecursion
         #region RessourceRequirement
         public bool CheckSkillRessourceRequirement(SkillDefinition skill)
         {
-            return skill.SkillStats.APCost <= UnitStats.ActionPoints
-                && skill.SkillStats.MPCost <= UnitStats.ActionPoints;
-        }
-
-        public bool CheckSkillRessourceRequirement(SkillDefinition skill, SkillStats addedCost)
-        {
-            return skill.SkillStats.APCost + addedCost.APCost <= UnitStats.ActionPoints
-                && skill.SkillStats.MPCost + addedCost.MPCost <= UnitStats.ManaPoints;
+            SkillStats stats = _unitController.Status.SetSkillStatsFromCurrentState(skill.SkillStats, skill.SkillTags.Contains(SkillTag.Atk));
+            return stats.APCost <= UnitStats.ActionPoints
+                && stats.MPCost <= UnitStats.ActionPoints;
         }
         #endregion /* RessourceRequirement */
 
@@ -81,7 +76,6 @@ namespace ArcaneRecursion
 
         public bool OnKnockbackDamage()
         {
-            //TODO KnockbackDamage
             return OnHPLoss(UnitStatsMax.HealthPoints / 10);
         }
 
@@ -121,6 +115,7 @@ namespace ArcaneRecursion
         public void RemoveShieldEffect(ShieldCombatEffect effect) { Shields.Remove(effect); }
         #endregion /* ShieldEffect */
 
+        #region DamageTaken
         public bool OnDamageTaken(int amount, DamageTypes damageType = DamageTypes.Magical)
         {
             if (damageType != DamageTypes.Arcane)
@@ -150,5 +145,6 @@ namespace ArcaneRecursion
 
             return false;
         }
+        #endregion /* DamageTaken */
     }
 }

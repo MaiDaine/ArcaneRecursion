@@ -116,10 +116,7 @@ namespace ArcaneRecursion
             _addToPendingEffects = true;
             foreach (CombatEffect effect in ActiveEffects)
                 if (effect.OnAtkLaunched(_unitController, targetTile))
-                {
-                    Debug.Log("Remove " + effect.Name);
                     effect.Duration = 0;
-                }
 
             ActiveEffects.RemoveAll(e => e.Duration == 0);
             BatchApplyEffect();
