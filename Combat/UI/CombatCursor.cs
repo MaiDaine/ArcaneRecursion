@@ -3,6 +3,7 @@
     public class CombatCursor
     {
         public Tile[] AvailableTiles;
+        public bool IsValid { get; private set; }
 
         private readonly CombatGrid _grid;
 
@@ -50,7 +51,10 @@
                 t.SetTileTmpState(TileTmpState.SkillRange);
 
             if (toTile == null)
+            {
+                IsValid = false;
                 return;
+            }
 
             if (skillData.SkillDefinition.SkillStats.CastRange == 0)
             {
@@ -59,9 +63,13 @@
                 {
                     toTile.SetTileTmpState(TileTmpState.Invalid);
                     AvailableTiles = new Tile[2] { unit.CurrentTile, toTile };
+                    IsValid = false;
                 }
                 else
+                {
                     AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile, unit.CombatEntity.Team);
+                    IsValid = true;
+                }
                 //AvailableTiles = new Tile[1] { unit.CurrentTile };
                 return;
             }
@@ -70,11 +78,15 @@
             if (distance >= skillData.SkillDefinition.SkillStats.MinCastRange
                 && distance <= skillData.SkillDefinition.SkillStats.CastRange
                 && loadedSkill.CheckRequirements(skillData.SkillDefinition, unit, toTile))
+            {
                 AvailableTiles = skillData.SkillDefinition.Cursor.Apply(_grid, unit, toTile, unit.CombatEntity.Team);
+                IsValid = true;
+            }
             else
             {
                 toTile.SetTileTmpState(TileTmpState.Invalid);
                 AvailableTiles = new Tile[1] { toTile };
+                IsValid = false;
             }
         }
     }

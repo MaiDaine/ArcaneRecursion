@@ -127,7 +127,7 @@ namespace ArcaneRecursion
                 {
                     //Tile targetTile = _raycast.GetTileFromCursor();
                     UpdateCursorPosition();
-                    if (_targetTile != null && _cursor.AvailableTiles != null
+                    if (_targetTile != null && _cursor.AvailableTiles != null && _cursor.IsValid
                         && _loadedSkill.CheckRequirements(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition, _currentUnit, _targetTile))
                     {
                         if (_targetTile != _currentUnit.CurrentTile)

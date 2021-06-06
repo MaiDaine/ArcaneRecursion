@@ -38,7 +38,7 @@ namespace ArcaneRecursion
                 new SkillData[6]
                 {
                     new SkillData(typeof(ChargedBlade)),
-                    new SkillData(typeof(NotImplementedCombatSkill)),
+                    new SkillData(typeof(FlameSpears)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
                     new SkillData(typeof(Dive)),
                     new SkillData(typeof(NotImplementedCombatSkill)),
@@ -257,6 +257,10 @@ namespace ArcaneRecursion
             {
                 GetNameFromType(typeof(DiveEffect)),
                 new SkillEffectData(typeof(DiveEffect), ClassNames.Augmenter)
+            },
+            {
+                GetNameFromType(typeof(FlameSpearsEffect)),
+                new SkillEffectData(typeof(FlameSpearsEffect), ClassNames.Augmenter)
             },
             #endregion /* Augmenter */
 
