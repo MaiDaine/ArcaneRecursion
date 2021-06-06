@@ -56,6 +56,33 @@ namespace ArcaneRecursion
             return BasicOrientation.BackSide;
         }
 
+        #region Rotation
+        public static HexCoordinates RotateClockwise60(HexCoordinates from)
+        {
+            return new HexCoordinates(-from.Y, -from.X);
+        }
+
+        public static HexCoordinates RotateClockwise120(HexCoordinates from)
+        {
+            return new HexCoordinates(from.Z, from.Y);
+        }
+
+        public static HexCoordinates Rotate180(HexCoordinates from)
+        {
+            return new HexCoordinates(-from.X, -from.Z);
+        }
+
+        public static HexCoordinates RotateCounterClockwise60(HexCoordinates from)
+        {
+            return new HexCoordinates(-from.Z, -from.Y);
+        }
+
+        public static HexCoordinates RotateCounterClockwise120(HexCoordinates from)
+        {
+            return new HexCoordinates(from.Y, from.X);
+        }
+        #endregion /* Rotation */
+
         public bool IsEqual(HexCoordinates other)
         {
             return X == other.X && Z == other.Z;

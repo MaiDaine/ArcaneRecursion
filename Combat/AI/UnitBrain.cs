@@ -11,8 +11,8 @@ namespace ArcaneRecursion
         {
             worldState.CurrentUnit.Index = worldState.Allies.Count;
             worldState.CurrentUnit.TeamId = teamId;
-            worldState.CurrentUnit.AvailableAP = controller.CurrentStats.ActionPoint;
-            worldState.CurrentUnit.AvailableMP = controller.CurrentStats.ManaPoint;
+            worldState.CurrentUnit.AvailableAP = controller.CurrentStats.ActionPoints;
+            worldState.CurrentUnit.AvailableMP = controller.CurrentStats.ManaPoints;
             worldState.CurrentUnit.MoveCost = controller.CurrentStats.MovementSpeed;
             worldState.CurrentUnit.Brain = this;
             worldState.CurrentUnit.Controller = controller;
@@ -20,6 +20,8 @@ namespace ArcaneRecursion
 
         public List<Tile[]> EvaluateBestPosition(PlannerWorldState worldState, CombatGrid grid)
         {
+            if (worldState.CurrentUnit.Controller.Status.StatusSummary.IsRoot)
+                return new List<Tile[]> { new Tile[1] { worldState.CurrentUnit.Controller.CurrentTile } };
             return worldState.CurrentGoal switch
             {
                 TeamGoal.Poke => FindPokePosition(worldState, grid),
@@ -52,10 +54,12 @@ namespace ArcaneRecursion
         public SimulatedStep EvaluateAction(PlannerWorldState worldState, Tile fromPosition, SkillData skill, ref int score)
         {
             //TODO
+            int distance;
             score = -1;
             foreach (WSUnit unit in worldState.Enemies)
             {
-                if (fromPosition.Coordinates.DistanceTo(worldState.Enemies[worldState.DamageTargetIndex].Position.Coordinates) <= skill.SkillDefinition.SkillStats.CastRange)
+                distance = fromPosition.Coordinates.DistanceTo(worldState.Enemies[worldState.DamageTargetIndex].Position.Coordinates);
+                if (distance >= skill.SkillDefinition.SkillStats.MinCastRange && distance <= skill.SkillDefinition.SkillStats.CastRange)
                 {
                     score = 100;
                     return new SimulatedStep() { Skill = skill, Targets = new Tile[1] { unit.Position } };

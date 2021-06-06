@@ -34,7 +34,6 @@ namespace ArcaneRecursion
             return activeTeam.Count == 1;
         }
 
-
         public void InitCombat(List<ICombatTurnEntity> entities)
         {
             Entities = entities;
@@ -113,6 +112,7 @@ namespace ArcaneRecursion
 
         public void ChangeUnitOrder(ICombatTurnEntity unit, int value)
         {
+            //TODO
             Debug.Log("Update " + unit.Id + " =>" + value);
         }
     }

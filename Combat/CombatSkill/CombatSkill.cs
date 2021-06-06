@@ -14,7 +14,7 @@ namespace ArcaneRecursion
 
         public virtual void OnSkillLaunched(SkillDefinition skillDefinition, UnitController caster, CombatCursor cursor, Tile targetTile)
         {
-            _updatedStats = caster.Status.SetSkillStatsFromCurrentState(skillDefinition.SkillStats);
+            _updatedStats = caster.Status.SetSkillStatsFromCurrentState(skillDefinition.SkillStats, skillDefinition.SkillTags.Contains(SkillTag.Atk));
             caster.Ressources.OnAPLoss(_updatedStats.APCost);
             caster.Ressources.OnMPLoss(_updatedStats.MPCost);
             caster.Skills.OnSkillLaunched();

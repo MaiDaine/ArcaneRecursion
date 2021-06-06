@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 using System;
 
 namespace ArcaneRecursion
@@ -22,24 +23,30 @@ namespace ArcaneRecursion
         public List<UnitSkill>[] AvailableSkills { get; private set; }
         public UnitSkill SelectedSkill { get; private set; }
 
-        public UnitSkills(List<ClassBuild> build, UnitController unit)
+        private readonly List<CombatEffect> _trackedEffects;
+
+        public UnitSkills(List<SkillData> innateSkills, List<ClassBuild> build, UnitController unit)
         {
-            //TODO Innate skills
             AvailableSkills = new List<UnitSkill>[4] { new List<UnitSkill>(), null, null, null };
+            _trackedEffects = new List<CombatEffect>();
             BuildClassNames = new ClassNames[4] { ClassNames.Innate, ClassNames.Innate, ClassNames.Innate, ClassNames.Innate };
+
+            foreach (SkillData e in innateSkills)
+                AvailableSkills[0].Add(new UnitSkill(e));
+
             for (int classIndex = 1; classIndex < build.Count; classIndex++)
             {
                 BuildClassNames[classIndex] = build[classIndex].Name;
                 AvailableSkills[classIndex] = new List<UnitSkill>();
                 if (build[classIndex].AvailableSkills[0])
                 {
-                    SkillData skill = ClassSkillLibrary.ClassSkillsDatas[build[classIndex].Name][0];
+                    SkillData skill = SkillLibrary.ClassSkillsDatas[build[classIndex].Name][0];
                     ((CombatSkill)Activator.CreateInstance(skill.Skill)).OnSkillLaunched(skill.SkillDefinition, unit, null, null);
                 }
                 for (int i = 1; i < 6; i++)
                 {
                     if (build[classIndex].AvailableSkills[i])
-                        AvailableSkills[classIndex].Add(new UnitSkill(ClassSkillLibrary.ClassSkillsDatas[build[classIndex].Name][i]));
+                        AvailableSkills[classIndex].Add(new UnitSkill(SkillLibrary.ClassSkillsDatas[build[classIndex].Name][i]));
                 }
             }
             ClearSelectedSkill();
@@ -58,8 +65,17 @@ namespace ArcaneRecursion
                 else
                     return;
             }
+
+            _trackedEffects.RemoveAll(e => e.Duration == 0);
         }
 
+        #region TrackedEffect
+        public void AddTrackedEffect(CombatEffect effect) { _trackedEffects.Add(effect); }
+
+        public CombatEffect GetTrackedEffect(string name) { return _trackedEffects.Find(e => e.Name == name); }
+        #endregion /* TrackedEffect */
+
+        #region SkillLaunchCycle
         public bool SelectCombatSkill(int buildCategory, int spellIndex)//TODO UI
         {
             if (AvailableSkills[buildCategory][spellIndex].Cooldown <= 0)
@@ -69,7 +85,6 @@ namespace ArcaneRecursion
             }
             return false;
         }
-
         public void OnSkillLaunched()
         {
             SelectedSkill.Cooldown = SelectedSkill.SkillStats.Cooldown;
@@ -79,5 +94,6 @@ namespace ArcaneRecursion
         {
             SelectedSkill = null;
         }
+        #endregion /* SkillLaunchCycle */
     }
 }

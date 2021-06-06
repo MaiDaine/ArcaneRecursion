@@ -5,6 +5,8 @@ namespace ArcaneRecursion
 {
     public class CombatGrid : MonoBehaviour
     {
+        public static CombatGrid Instance;
+
         public int Width = 6;
         public int Height = 6;
         public Tile[] Tiles { get; private set; }
@@ -86,7 +88,15 @@ namespace ArcaneRecursion
             return path.ToArray();
         }
 
-        #region MonoBehavior LifeCycle
+        #region MonoBehaviorLifeCycle
+        private void Awake()
+        {
+            if (Instance == null)
+                Instance = this;
+            else
+                Destroy(this.gameObject);
+        }
+
         private void Start()
         {
             Tiles = new Tile[Height * Width];
@@ -99,7 +109,7 @@ namespace ArcaneRecursion
             _searchFrontier = new TilePriorityQueue();
             _onMapLoaded.Raise();
         }
-        #endregion /* MonoBehavior LifeCycle */
+        #endregion /* MonoBehaviorLifeCycle */
 
         private void CreateTile(int x, int z, int i)
         {

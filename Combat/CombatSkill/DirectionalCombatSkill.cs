@@ -15,7 +15,7 @@
             UnitController targetUnit = targetTile.TileEntity.GameObject.GetComponent<UnitController>();
             _onCastOrientation = HexCoordinates.GetOrientation(caster.Movement.Orientation, targetUnit.Movement.Orientation);
             _onReceivedOrientation = targetUnit.Status.OnDirectionalAttackReceived(_onCastOrientation);
-            // TODO Orientation
+
             switch (_onCastOrientation)
             {
                 case BasicOrientation.Front:

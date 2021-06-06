@@ -1,96 +1,220 @@
 ﻿using System.Collections.Generic;
+using System;
+using UnityEngine;
 
 namespace ArcaneRecursion
 {
     public class UnitStatus
     {
         public List<CombatEffect> ActiveEffects { get; private set; }
+        public DefModifier DefModifier;
+        public UnitStatusEffect StatusSummary;
 
         private readonly UnitController _unitController;
         private SkillModifier _skillModifier;
+        private SkillModifier _atkModifier;
+        private List<CombatEffect> _pendingEffect;
+        private bool _addToPendingEffects = false;
 
         #region Init
         public UnitStatus(UnitController controller)
         {
-            _unitController = controller;
             ActiveEffects = new List<CombatEffect>();
+            StatusSummary.Reset();
+            _unitController = controller;
+            _pendingEffect = new List<CombatEffect>();
         }
         #endregion /* Init */
 
         public void ApplyEffect(CombatEffect effect)
         {
+            if (_addToPendingEffects)
+            {
+                _pendingEffect.Add(effect);
+                return;
+            }
+
+            List<SkillTag> skillTags = SkillLibrary.ClassEffectsDatas[effect.Name].EffectDefinition.SkillTags;
+            foreach (CombatEffect e in ActiveEffects)
+            {
+                if (!e.OnEffectApply(_unitController, ref effect, skillTags))
+                    return;
+            }
+
             ActiveEffects.Add(effect);
-            if (effect is ISkillEnhancement)
+            if (effect is ShieldCombatEffect)
+                _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
+            if (effect is ISkillEnhancement || effect is IDefEnhancement || effect is IUnitStatus)
                 RefreshEnhancement();
         }
 
-        public SkillStats SetSkillStatsFromCurrentState(SkillStats baseStats)
+        public SkillStats SetSkillStatsFromCurrentState(SkillStats baseStats, bool isAtk = false)
         {
             SkillStats result = baseStats;
-            result.APCost = baseStats.APCost - _skillModifier.APFlat;
-            result.APCost = (int)(result.APCost * _skillModifier.APPercent);
-            result.MPCost = baseStats.MPCost - _skillModifier.MPFlat;
-            result.MPCost = (int)(result.MPCost * _skillModifier.MPPercent);
-            //TODO Potency scale
+            SkillModifier modifier = isAtk ? _atkModifier : _skillModifier;
+
+            result.APCost = baseStats.APCost - modifier.AP.FlatValue;
+            result.APCost = result.APCost * modifier.AP.PercentValue / 100;
+            result.MPCost = baseStats.MPCost - modifier.MP.FlatValue;
+            result.MPCost = result.MPCost * modifier.MP.PercentValue / 100;
+            result.Potency = baseStats.Potency - modifier.Potency.FlatValue;
+            result.Potency = result.Potency * modifier.Potency.PercentValue / 100;
+
             return result;
         }
 
         #region UnitTurn Cycle
         public void OnStartTurn()
         {
-            RefreshEnhancement();
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnTurnStart(_unitController))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
         }
 
         public void OnEndTurn()
         {
-            int currentSize = ActiveEffects.Count;
-            for (int i = 0; i < currentSize; i++)
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
             {
-                if (ActiveEffects[i].Duration > 0)
+                if (effect.OnTurnEnd(_unitController))
+                    effect.Duration = 0;
+                if (effect.Duration > 0)
                 {
-                    ActiveEffects[i].Duration--;
-                    if (ActiveEffects[i].Duration == 0)
-                        ActiveEffects[i].OnDurationEnd(_unitController);
+                    effect.Duration--;
+                    if (effect.Duration == 0)
+                    {
+                        effect.OnDurationEnd(_unitController);
+                        if (effect is ShieldCombatEffect)
+                            _unitController.Ressources.RemoveShieldEffect(effect as ShieldCombatEffect);
+                    }
                 }
             }
             ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
         }
         #endregion /* UnitTurn Cycle */
 
+        //TODO FACTORISE EFFECTS
         #region OnEffects
         public void OnSkillLaunched()
         {
-            int currentSize = ActiveEffects.Count;
-            for (int i = 0; i < currentSize; i++)
-            {
-                if (ActiveEffects[i].OnSkillLaunched(_unitController))
-                    ActiveEffects[i].Duration = -2;
-            }
-            ActiveEffects.RemoveAll(e => e.Duration == -2);
-            RefreshEnhancement();
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnSkillLaunched(_unitController))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
+        }
+
+        public void OnAtkLaunched(Tile targetTile)
+        {
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnAtkLaunched(_unitController, targetTile))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
         }
 
         public BasicOrientation OnDirectionalAttackReceived(BasicOrientation from)
         {
-            int currentSize = ActiveEffects.Count;
-            for (int i = 0; i < currentSize; i++)
-                ActiveEffects[i].OnDirectionalAttackReceived(_unitController, ref from);
+            foreach (CombatEffect effect in ActiveEffects)
+                effect.OnDirectionalAttackReceived(_unitController, ref from);
+
             return from;
+        }
+
+        public void OnEnterTile(Tile tile)
+        {
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnUnitEnterTile(_unitController, tile))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
+        }
+
+        public void OnDispell()
+        {
+            _addToPendingEffects = true;
+            foreach (CombatEffect effect in ActiveEffects)
+                if (effect.OnDispell(_unitController))
+                    effect.Duration = 0;
+
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
+            BatchApplyEffect();
+        }
+
+        public void OnUnitDeath()
+        {
+            foreach (CombatEffect effect in ActiveEffects)
+                effect.OnUnitDeath(_unitController);
         }
         #endregion /* OnEffects */
 
         private void RefreshEnhancement()//TODO APPLY AS UNARY ? //TODO CONTROL REFRESH
         {
-            _skillModifier.APFlat = 0;
-            _skillModifier.APPercent = 1;
-            _skillModifier.MPFlat = 0;
-            _skillModifier.MPPercent = 1;
+            DefModifier.Reset();
+            StatusSummary.Reset();
+            _skillModifier.Reset();
+            _atkModifier.Reset();
 
             foreach (CombatEffect e in ActiveEffects)
             {
-                ISkillEnhancement tmp = e as ISkillEnhancement;
-                tmp?.ApplyEnhancement(ref _skillModifier);
+                ISkillEnhancement skillEnhancement = e as ISkillEnhancement;
+                skillEnhancement?.ApplyEnhancement(ref _skillModifier);
+
+                IAtkEnhancement atkEnhancement = e as IAtkEnhancement;
+                atkEnhancement?.ApplyEnhancement(ref _atkModifier);
+
+                IDefEnhancement defEnhancement = e as IDefEnhancement;
+                defEnhancement?.ApplyEnhancement(ref DefModifier);
+
+                IUnitStatus unitStatus = e as IUnitStatus;
+                unitStatus?.ApplyStatus(ref StatusSummary);
             }
+
+            StatusModifierVariable modifier;
+            for (int i = 0; i < _unitController.CurrentStats.Defences.Length; i++)
+            {
+                modifier = DefModifier.GetModifier((DamageTypes)i);
+                _unitController.CurrentStats.Defences[i] = modifier.FlatValue + (modifier.PercentValue / 100);
+            }
+        }
+
+        private void BatchApplyEffect()//TODO REFRESH TARGET ?
+        {
+            bool skip;
+
+            _addToPendingEffects = false;
+            for (int i = 0; i < _pendingEffect.Count; i++)
+            {
+                skip = false;
+                CombatEffect effect = _pendingEffect[i];
+                List<SkillTag> skillTags = SkillLibrary.ClassEffectsDatas[effect.Name].EffectDefinition.SkillTags;
+                foreach (CombatEffect e in ActiveEffects)
+                    if (!e.OnEffectApply(_unitController, ref effect, skillTags))
+                    {
+                        skip = true;
+                        return;
+                    }
+
+                if (!skip)
+                {
+                    ActiveEffects.Add(effect);
+                    if (effect is ShieldCombatEffect)
+                        _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
+                }
+            }
+            _pendingEffect.Clear();
+            RefreshEnhancement();
         }
     }
 }

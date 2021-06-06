@@ -62,11 +62,11 @@ namespace ArcaneRecursion
                     {
                         if (entity.Id == unit.Id)
                             unit.GameObject.GetComponent<UnitBrain>()?.OnTurnStart(ref worldState, unitController, unit.Team);
-                        worldState.Allies.Add(new WSUnit() { HealthPoint = unitController.CurrentStats.HealthPoint, Position = unitController.CurrentTile, Orientation = unitController.Movement.Orientation });
+                        worldState.Allies.Add(new WSUnit() { HealthPoint = unitController.CurrentStats.HealthPoints, Position = unitController.CurrentTile, Orientation = unitController.Movement.Orientation });
                     }
                     else
                     {
-                        worldState.Enemies.Add(new WSUnit() { HealthPoint = unitController.CurrentStats.HealthPoint, Position = unitController.CurrentTile, Orientation = unitController.Movement.Orientation });
+                        worldState.Enemies.Add(new WSUnit() { HealthPoint = unitController.CurrentStats.HealthPoints, Position = unitController.CurrentTile, Orientation = unitController.Movement.Orientation });
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace ArcaneRecursion
                 else
                 {
                     Tile[] updatedPath = new Tile[path.Length - savedPosition];
-                    Array.Copy(path, savedPosition, updatedPath, 0, savedPosition);//TODO USE STUB UNIT
+                    Array.Copy(path, savedPosition, updatedPath, 0, path.Length - savedPosition);//TODO USE STUB UNIT
                     path = updatedPath;
                 }
                 currentSequence.Steps.Add(new SimulatedStep() { Skill = null, Targets = partialPath });
@@ -156,7 +156,7 @@ namespace ArcaneRecursion
 
         private void ExecuteSequence()
         {
-            Debug.Log(string.Format("Action:{0} || UNIT AP: {1}", _actionSequence.Count, _currentUnit.CurrentStats.ActionPoint));
+            Debug.Log(string.Format("Action:{0} || UNIT AP: {1}", _actionSequence.Count, _currentUnit.CurrentStats.ActionPoints));
             if (_actionSequence.Count == 0)
             {
                 base.UnitActionEnd();
@@ -170,7 +170,7 @@ namespace ArcaneRecursion
                 _currentUnit.Move(ExecuteSequence, step.Targets.Skip(1).ToArray());
                 return;
             }
-            _currentUnit.CurrentStats.ActionPoint -= step.Skill.SkillDefinition.SkillStats.APCost;
+            _currentUnit.CurrentStats.ActionPoints -= step.Skill.SkillDefinition.SkillStats.APCost;
             ExecuteSequence();
         }
     }

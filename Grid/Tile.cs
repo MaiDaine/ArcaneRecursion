@@ -1,25 +1,33 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace ArcaneRecursion
 {
     public class Tile : MonoBehaviour
     {
         public HexCoordinates Coordinates { get; private set; }
+        public TileSearchData SearchData { get; private set; }
         public TileState State { get; private set; }
         public TileTmpState TmpState { get; private set; } = TileTmpState.None;
-        public TileSearchData SearchData { get; private set; }
-        public CombatEntity TileEntity { get; set; } = null;
+        public CombatEntity TileEntity { get; set; }
+
+        public List<CombatEffect> OnTileMovementEffects { get; private set; }
+        public int MoveCostPercent { get; set; }
 
         [SerializeField] private MeshRenderer tileRenderer;
 
         public void Init(HexCoordinates coordinates, TileState state = TileState.Empty)
         {
             Coordinates = coordinates;
-            text.text = coordinates.ToStringOnSeparateLines();
             SearchData = new TileSearchData(this);
             SetTileState(state);
+            OnTileMovementEffects = new List<CombatEffect>();
+            MoveCostPercent = 100;
+
+            text.text = coordinates.ToStringOnSeparateLines();
         }
 
+        #region TileState
         public void SetTileState(TileState state)
         {
             State = state;
@@ -70,6 +78,21 @@ namespace ArcaneRecursion
                     break;
             }
         }
+        #endregion /* TileState */
+
+        public void OnUnitEnterTile(UnitController unit, bool teleport)
+        {
+            if (OnTileMovementEffects.Count > 0)
+                foreach (CombatEffect effect in OnTileMovementEffects)
+                    effect.OnUnitEnterTile(unit, this);
+        }
+
+        public void OnUnitExitTile(UnitController unit, bool teleport)
+        {
+            if (OnTileMovementEffects.Count > 0)
+                foreach (CombatEffect effect in OnTileMovementEffects)
+                    effect.OnUnitExitTile(unit, this);
+        }
 
         #region DEBUG
         [SerializeField] private TextMesh text;
@@ -84,6 +107,5 @@ namespace ArcaneRecursion
             text.text = s;
         }
         #endregion /* DEBUG */
-
     }
 }

@@ -6,7 +6,6 @@ namespace ArcaneRecursion
 {
     public class CombatLoader : MonoBehaviour //TODO {Encounters}
     {
-        public CombatGrid Grid;
         public CombatLoaderData Data;
         public NodeDefinition NotImplemented;
         public List<ICombatTurnEntity> PlayerUnits;
@@ -25,7 +24,7 @@ namespace ArcaneRecursion
                 UnitController controller = unit.GetComponent<UnitController>();
                 CombatEntity combatEntity = new CombatEntity(unit, e, new CombatTurnEntityStore(1, tmp, e.Icone));
                 //CombatEntity combatEntity = new CombatEntity(unit, e, 1, tmp);
-                controller.Init(e, combatEntity, Grid.Tiles[POS[tmp]]);
+                controller.Init(e, combatEntity, CombatGrid.Instance.Tiles[POS[tmp]]);
                 controller.Movement.SetOrientation(controller.CurrentTile.SearchData.GetNeighbor(HexDirection.E));
                 PlayerUnits.Add(combatEntity);
                 tmp++;
@@ -39,7 +38,7 @@ namespace ArcaneRecursion
                 UnitController controller = unit.GetComponent<UnitController>();
                 CombatEntity combatEntity = new AICombatEntity(unit, e, new CombatTurnEntityStore(2, tmp, e.Icone, e.FormationPosition));
                 //CombatEntity combatEntity = new CombatEntity(unit, e, 2, tmp);
-                controller.Init(e, combatEntity, Grid.Tiles[POS[tmp]]);
+                controller.Init(e, combatEntity, CombatGrid.Instance.Tiles[POS[tmp]]);
                 controller.Movement.SetOrientation(controller.CurrentTile.SearchData.GetNeighbor(HexDirection.W));
                 EnemyUnits.Add(combatEntity);
                 tmp++;
@@ -53,19 +52,35 @@ namespace ArcaneRecursion
             SkillDefinition notImplemented = Resources.Load("NotImplemented") as SkillDefinition;
             ClassNames[] classNames = (ClassNames[])ClassNames.GetValues(typeof(ClassNames));
             string skillName;
+            SkillDefinition skillDefinition;
+
+            foreach (KeyValuePair<string, SkillData> e in SkillLibrary.InnateSkills)
+            {
+                skillDefinition = Resources.Load<SkillDefinition>(string.Format("Weapons/{0}/{0}", e.Key));
+                if (skillDefinition == null)
+                    Debug.Log(string.Format("MISSING::Weapons::{0}", e.Key));
+                else
+                    SkillLibrary.InnateSkills[e.Key].SkillDefinition = skillDefinition;
+            }
 
             for (int classIndex = 1; classIndex < classNames.Length; classIndex++)
                 for (int skillIndex = 0; skillIndex < 6; skillIndex++)
                 {
-                    skillName = ClassSkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].Name;
-                    SkillDefinition skillDefinition = Resources.Load(string.Format("{0}/{1}/{1}", classNames[classIndex].ToString(), skillName)) as SkillDefinition;
-                    ClassSkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].SkillDefinition = skillDefinition ?? notImplemented;
+                    skillName = SkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].Name;
+                    skillDefinition = Resources.Load<SkillDefinition>(string.Format("Classes/{0}/{1}/{1}", classNames[classIndex].ToString(), skillName));
+                    if (skillDefinition == null && skillName != "NotImplementedCombatSkill")
+                        Debug.Log(string.Format("MISSING::{0}::{1}", classNames[classIndex].ToString(), skillName));
+                    SkillLibrary.ClassSkillsDatas[classNames[classIndex]][skillIndex].SkillDefinition = skillDefinition ?? notImplemented;
                 }
+
             string[] stringSeparators = new string[1] { "Effect" };
-            foreach (KeyValuePair<string, SkillEffectData> e in ClassSkillLibrary.ClassEffectsDatas)
+            foreach (KeyValuePair<string, SkillEffectData> e in SkillLibrary.ClassEffectsDatas)
             {
                 string folderName = e.Value.Name.Split(stringSeparators, System.StringSplitOptions.RemoveEmptyEntries)[0];
-                e.Value.EffectDefinition = Resources.Load(string.Format("{0}/{1}/{2}", classNames[(int)e.Value.Class].ToString(), folderName, e.Value.Name)) as SkillDefinition;
+                skillDefinition = Resources.Load<SkillDefinition>(string.Format("Classes/{0}/{1}/{2}", classNames[(int)e.Value.Class].ToString(), folderName, e.Value.Name));
+                if (skillDefinition == null)
+                    Debug.Log(string.Format("MISSING::{0}::{1}", classNames[(int)e.Value.Class].ToString(), e.Value.Name));
+                e.Value.EffectDefinition = skillDefinition ?? notImplemented;
             }
         }
     }
