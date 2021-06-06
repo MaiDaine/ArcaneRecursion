@@ -69,6 +69,8 @@ namespace ArcaneRecursion
 
         public void SkillLoaded()
         {
+            if (_loadedSkill != null)
+                CancelAction(false);
             //TODO Update spell req with unit status
             if (!_currentUnit.Ressources.CheckSkillRessourceRequirement(_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition))
             {
@@ -92,11 +94,7 @@ namespace ArcaneRecursion
                         Tile tmp = tile.SearchData.Neighbors[i];
 
                         if (tmp != null)
-                        {
-                            if (indexRange >= _currentUnit.Skills.SelectedSkill.SkillStats.CastRange)
-                                tmp.SetTileTmpState(TileTmpState.SkillRange);
                             tmpList.Add(tmp);
-                        }
                     }
                 }
                 tiles.Clear();
@@ -105,8 +103,19 @@ namespace ArcaneRecursion
                         tiles.Add(t);
                 tmpList.Clear();
             }
+            HexCoordinates from = _currentUnit.CurrentTile.Coordinates;
+            int minRange = _currentUnit.Skills.SelectedSkill.SkillStats.MinCastRange;
             _loadedSkill = Activator.CreateInstance(_currentUnit.Skills.SelectedSkill.SkillData.Skill) as CombatSkill;
             _loadedSkill.TilesAffected = tilesAffected.ToList();
+            _loadedSkill.TilesAffected.RemoveAll(e =>
+            {
+                if (from.DistanceTo(e.Coordinates) > minRange)
+                {
+                    e.SetTileTmpState(TileTmpState.SkillRange);
+                    return false;
+                }
+                return true;
+            });
             if (_currentUnit.Skills.SelectedSkill.SkillData.SkillDefinition.SkillTags.Contains(SkillTag.Projectile))
             {
                 _shapeDrawer.SetShapeDrawState(true);
@@ -163,14 +172,16 @@ namespace ArcaneRecursion
             }
         }
 
-        public void CancelAction()
+        public void CancelAction(bool clearSkill = true)
         {
             if (_currentUnit.Skills.SelectedSkill != null)
             {
                 if (_loadedSkill.TilesAffected != null)
                     foreach (Tile t in _loadedSkill.TilesAffected)
                         t.SetTileTmpState(TileTmpState.None);
-                _currentUnit.Skills.ClearSelectedSkill();
+                _shapeDrawer.SetShapeDrawState(false);
+                if (clearSkill)
+                    _currentUnit.Skills.ClearSelectedSkill();
             }
         }
     }

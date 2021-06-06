@@ -13,7 +13,7 @@ namespace ArcaneRecursion
         {
             base.OnSkillLaunched(skillDefinition, caster, cursor, targetTile);
 
-            caster.Movement.Teleport(targetTile);
+            caster.Movement.Teleport(cursor.AvailableTiles[cursor.AvailableTiles.Length - 1]);
             foreach (Tile tile in cursor.AvailableTiles)
                 tile?.TileEntity?.GameObject.GetComponent<UnitController>().Ressources.OnDamageTaken(skillDefinition.SkillStats.Potency, DamageTypes.Arcane);
         }

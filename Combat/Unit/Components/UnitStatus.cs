@@ -20,7 +20,7 @@ namespace ArcaneRecursion
         public UnitStatus(UnitController controller)
         {
             ActiveEffects = new List<CombatEffect>();
-            StatusSummary = new UnitStatusEffect { IsRoot = false };
+            StatusSummary.Reset();
             _unitController = controller;
             _pendingEffect = new List<CombatEffect>();
         }
@@ -116,9 +116,12 @@ namespace ArcaneRecursion
             _addToPendingEffects = true;
             foreach (CombatEffect effect in ActiveEffects)
                 if (effect.OnAtkLaunched(_unitController, targetTile))
+                {
+                    Debug.Log("Remove " + effect.Name);
                     effect.Duration = 0;
+                }
 
-            ActiveEffects.RemoveAll(e => e.Duration == -0);
+            ActiveEffects.RemoveAll(e => e.Duration == 0);
             BatchApplyEffect();
         }
 
@@ -191,19 +194,29 @@ namespace ArcaneRecursion
 
         private void BatchApplyEffect()//TODO REFRESH TARGET ?
         {
+            bool skip;
+
             _addToPendingEffects = false;
             for (int i = 0; i < _pendingEffect.Count; i++)
             {
+                skip = false;
                 CombatEffect effect = _pendingEffect[i];
                 List<SkillTag> skillTags = SkillLibrary.ClassEffectsDatas[effect.Name].EffectDefinition.SkillTags;
                 foreach (CombatEffect e in ActiveEffects)
                     if (!e.OnEffectApply(_unitController, ref effect, skillTags))
+                    {
+                        skip = true;
                         return;
+                    }
 
-                ActiveEffects.Add(effect);
-                if (effect is ShieldCombatEffect)
-                    _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
+                if (!skip)
+                {
+                    ActiveEffects.Add(effect);
+                    if (effect is ShieldCombatEffect)
+                        _unitController.Ressources.AddShieldEffect(effect as ShieldCombatEffect);
+                }
             }
+            _pendingEffect.Clear();
             RefreshEnhancement();
         }
     }

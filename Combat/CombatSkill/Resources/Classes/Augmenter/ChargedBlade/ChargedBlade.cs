@@ -28,8 +28,8 @@ namespace ArcaneRecursion
 
         public override bool OnSkillLaunched(UnitController unit)
         {
-            base.OnSkillLaunched(unit);
-            unit.Status.ApplyEffect(new ChargedBladeEffect(Potency));
+            if (unit.Status.ActiveEffects.Find(e => e.Name == SkillLibrary.GetNameFromType(typeof(ChargedBladeEffect))) == null)
+                unit.Status.ApplyEffect(new ChargedBladeEffect(Potency));
             return false;
         }
     }

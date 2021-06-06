@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 
 namespace ArcaneRecursion
 {
@@ -10,7 +11,7 @@ namespace ArcaneRecursion
 
         public override bool CheckRequirements(SkillDefinition skillDefinition, UnitController unit, Tile targetTile)
         {
-            if (!unit.Status.StatusSummary.IsRoot && targetTile?.TileEntity.Team != 0)
+            if (!unit.Status.StatusSummary.IsRoot && (targetTile?.TileEntity?.Team ?? 0) != 0)
             {
                 _targetUnit = targetTile.TileEntity.GameObject.GetComponent<UnitController>();
                 return true;
