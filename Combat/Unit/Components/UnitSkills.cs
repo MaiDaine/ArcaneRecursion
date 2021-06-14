@@ -20,10 +20,15 @@ namespace ArcaneRecursion
     public class UnitSkills
     {
         public ClassNames[] BuildClassNames { get; private set; }
-        public List<UnitSkill>[] AvailableSkills { get; private set; }
-        public UnitSkill SelectedSkill { get; private set; }
+        public List<UnitSkill>[] AvailableSkills { get; protected set; }
+        public UnitSkill SelectedSkill { get; protected set; }
 
-        private readonly List<CombatEffect> _trackedEffects;
+        protected readonly List<CombatEffect> _trackedEffects;
+
+        public UnitSkills()
+        {
+            _trackedEffects = new List<CombatEffect>();
+        }
 
         public UnitSkills(List<SkillData> innateSkills, List<ClassBuild> build, UnitController unit)
         {
