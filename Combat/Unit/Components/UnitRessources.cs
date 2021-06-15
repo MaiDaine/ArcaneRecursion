@@ -20,6 +20,16 @@ namespace ArcaneRecursion
             Shields = new List<ShieldCombatEffect>();
         }
 
+        //Stub constructor
+        public UnitRessources(UnitController controller, UnitRessources other)
+        {
+            _unitController = controller;
+            _statsModifier.Reset();
+            Shields = new List<ShieldCombatEffect>();
+            UnitStats = new UnitStats(other.UnitStats);
+            UnitStatsMax = new UnitStats(other.UnitStatsMax);
+        }
+
         public void LoadStats(UnitStats stats)
         {
             UnitStats = new UnitStats(stats);

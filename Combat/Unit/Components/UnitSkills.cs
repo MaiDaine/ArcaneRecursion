@@ -25,10 +25,8 @@ namespace ArcaneRecursion
 
         protected readonly List<CombatEffect> _trackedEffects;
 
-        public UnitSkills()
-        {
-            _trackedEffects = new List<CombatEffect>();
-        }
+        //Stub constructor
+        public UnitSkills() { _trackedEffects = new List<CombatEffect>(); }
 
         public UnitSkills(List<SkillData> innateSkills, List<ClassBuild> build, UnitController unit)
         {
