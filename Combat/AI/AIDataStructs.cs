@@ -10,13 +10,14 @@ namespace ArcaneRecursion
         public WSCurrentUnit CurrentUnit;
         public int DamageTargetIndex;
         public int CCTargetIndex;
+        public int LowestAllyIndex;
+        public HexCoordinates TeamAveragePosition;
         public List<WSUnit> Allies;
         public List<WSUnit> Enemies;
     }
 
     public struct WSCurrentUnit
     {
-        public int Index;
         public int TeamId;
         public int AvailableAP;
         public int AvailableMP;
