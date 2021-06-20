@@ -5,11 +5,11 @@ namespace ArcaneRecursion
 {
     public class UnitController : MonoBehaviour
     {
-        public CombatEntity CombatEntity { get; private set; }
-        public UnitMovement Movement { get; private set; }
-        public UnitRessources Ressources { get; private set; }
-        public UnitSkills Skills { get; private set; }
-        public UnitStatus Status { get; private set; }
+        public CombatEntity CombatEntity { get; protected set; }
+        public UnitMovement Movement { get; protected set; }
+        public UnitRessources Ressources { get; protected set; }
+        public UnitSkills Skills { get; protected set; }
+        public UnitStatus Status { get; protected set; }
         public UnitStats CurrentStats { get { return Ressources.UnitStats; } }
         public DefModifier Defences { get { return Status.DefModifier; } }
         public Tile CurrentTile { get { return Movement.CurrentTile; } }
@@ -47,7 +47,7 @@ namespace ArcaneRecursion
             return Ressources.UnitStats.ActionPoints >= moveCost;
         }
 
-        public string Move(Action callback, Tile[] path)
+        public virtual bool Move(Action callback, Tile[] path)
         {
             int moveCost = CalculateMoveCost(path);
 
@@ -55,9 +55,9 @@ namespace ArcaneRecursion
             {
                 CurrentStats.ActionPoints -= moveCost;
                 Movement.MoveTo(callback, path);
-                return null;
+                return true;
             }
-            return "Not enought AP";
+            return false;
         }
 
         public void OnKnockBack(HexCoordinates direction)
@@ -80,7 +80,7 @@ namespace ArcaneRecursion
             Ressources.OnKnockbackDamage();
         }
 
-        public void OnDeath()
+        public virtual void OnDeath()
         {
             Debug.Log("TODO UNIT DEATH"); //TODO Animation
             Status.OnUnitDeath();
@@ -88,7 +88,7 @@ namespace ArcaneRecursion
         }
 
         #region MonoBehavior LifeCycle
-        private void Awake()
+        protected void Awake()
         {
             Movement = GetComponent<UnitMovement>();
             Ressources = new UnitRessources(this);
@@ -96,7 +96,7 @@ namespace ArcaneRecursion
         }
         #endregion /* MonoBehavior LifeCycle */
 
-        private int CalculateMoveCost(Tile[] path)
+        protected int CalculateMoveCost(Tile[] path)
         {
             int moveCost = 0;
             for (int i = 0; i < path.Length; i++)

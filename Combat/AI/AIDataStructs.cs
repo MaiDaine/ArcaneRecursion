@@ -11,9 +11,10 @@ namespace ArcaneRecursion
         public int DamageTargetIndex;
         public int CCTargetIndex;
         public int LowestAllyIndex;
-        public HexCoordinates TeamAveragePosition;
         public List<WSUnit> Allies;
+        public HexCoordinates AlliesAveragePosition;
         public List<WSUnit> Enemies;
+        public HexCoordinates EnemiesAveragePosition;
     }
 
     public struct WSCurrentUnit
